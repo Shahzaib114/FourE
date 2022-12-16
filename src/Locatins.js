@@ -35,9 +35,7 @@ return(
                 <Text >
                     Your Profile is under Approval Process !{'\n'} Do You want to Update Details ?
                 </Text>
-
                 </TouchableOpacity>
-
             </View>
             </View>
             

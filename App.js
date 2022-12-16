@@ -70,6 +70,7 @@ import PushNotification from 'react-native-push-notification';
 import DriverWalletScreen from './src/Wallet';
 import CustomerWalletScreen from './src/UserApp/CustomerWallet';
 import NetInfo from "@react-native-community/netinfo";
+import NetworkCheck from './src/NetworkError';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -339,7 +340,7 @@ function App({ navigation }) {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={'Locations'}
+        <Stack.Navigator initialRouteName={'UserAppSplash'}
           screenOptions={{
             headerShown: false
           }}>
@@ -363,6 +364,8 @@ function App({ navigation }) {
           <Stack.Screen name="CustomeHeader" component={CustomeHeader} />
           <Stack.Screen name="CustomBackArrow" component={CustomBackArrow} />
           <Stack.Screen name="IncomingRides" component={IncomingRides} />
+          <Stack.Screen name="NetworkCheck" component={NetworkCheck} />
+
 
           {/* Starting Customer App*/}
           <Stack.Screen name="UserAppSplash" component={UserAppSplash} />

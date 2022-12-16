@@ -43,13 +43,7 @@ const CustomerResetPass = ({ navigation, route }) => {
              NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
                     console.log('network not available!')
-                    Alert.alert(
-                        "No Internet",
-                        "Please Turn On Your Wifi or Recharge your Mobile Data",
-                        [
-                            { text: "OK", onPress: () => console.log("OK Pressed") }
-                        ]
-                    )
+                    navigation.navigate('NetworkCheck')
                 } else {
                     dispatch(updatingCustomerResetPassword({ email: route.params.paramDriverMail, password: userPass, password_confirmation: userConfirmPass }))
                 }

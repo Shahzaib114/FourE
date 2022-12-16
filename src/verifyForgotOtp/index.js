@@ -56,13 +56,7 @@ const VerifyForgotOtp = ({ navigation, route }) => {
              NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
                     console.log('network not available!')
-                    Alert.alert(
-                        "No Internet",
-                        "Please Turn On Your Wifi or Recharge your Mobile Data",
-                        [
-                            { text: "OK", onPress: () => console.log("OK Pressed") }
-                        ]
-                    )
+                    navigation.navigate('NetworkCheck')
                 } else {
                     dispatch(PostingForgotPasswordOTP({ opt: driverOtp }))
                 }
@@ -84,7 +78,14 @@ const VerifyForgotOtp = ({ navigation, route }) => {
     }, [resendLoading]);
 
     const postResendRequest = () => {
-        dispatch(ResendOTPRequest({ email: route.params.paramDriverMail }))
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                console.log('network not available!')
+                navigation.navigate('NetworkCheck')
+            } else {
+                dispatch(ResendOTPRequest({ email: route.params.paramDriverMail }))
+            }
+        })
     }
 
     const refTimer = useRef();

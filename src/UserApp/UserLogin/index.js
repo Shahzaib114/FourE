@@ -20,7 +20,7 @@ import { CustomerValidation } from '../../../store/Actions/CustomerLogin/Custome
 import RNPusherPushNotifications from "react-native-pusher-push-notifications";
 import NetInfo from "@react-native-community/netinfo";
 
-const CustomerLogin = ({ navigation, route }) => {
+const CustomerLogin = ({ navigation, route, props }) => {
     const [userMail, setUserMail] = useState('');
     const [userPass, setUserPass] = useState('');
     const [errormsgMail, setErrorMsgMail] = useState('');
@@ -113,14 +113,8 @@ const CustomerLogin = ({ navigation, route }) => {
             // import NetInfo from "@react-native-community/netinfo";
             NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
-                    console.log('network not available!')
-                    Alert.alert(
-                        "No Internet",
-                        "Please Turn On Your Wifi or Recharge your Mobile Data",
-                        [
-                            { text: "OK", onPress: () => console.log("OK Pressed") }
-                        ]
-                    )
+                    console.log('network not available!'),
+                    navigation.navigate('NetworkCheck')
                 } else {
                     postLoginData()
                 }

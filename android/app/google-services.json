@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "924715853711",
+    "project_id": "foureapp-642e2",
+    "storage_bucket": "foureapp-642e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924715853711:android:1d0b85c4b5fdf7b78dcdfa",
+        "android_client_info": {
+          "package_name": "com.foureapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924715853711-k99cr737ejqh3eqfa9at52h5pf6f013h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDojLsGALZr5BAgQBkF44txE1LB8yZDvJ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924715853711-k99cr737ejqh3eqfa9at52h5pf6f013h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

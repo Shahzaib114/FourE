@@ -1,0 +1,143 @@
+import { Dimensions, StyleSheet } from "react-native";
+import Colors from "../../../utility/colors/Colors";
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    scrollViewStyle: {
+        backgroundColor: Colors.getLightColor('primaryColor'),
+    },
+    contentContainer: {
+        alignItems: 'center',
+        // flexGrow: 1
+        flexGrow: 1,
+        justifyContent:'space-around'
+    },
+    firstView: {
+        // height: Dimensions.get('window').height * 0.35,
+        width: '90%',
+        justifyContent: 'space-around',
+    },
+    welcomeLogin: {
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    TextInputSection: {
+        marginTop: '1%',
+        // height: Dimensions.get('window').height * 0.28,
+        width: '90%',
+        marginHorizontal: '5%',
+    },
+    welcomeText: {
+        fontSize: 35,
+        color: Colors.getLightColor('whiteColor'),
+        fontFamily: 'Montserrat-Medium',
+    },
+    loginText: {
+        fontSize: 30,
+        color: Colors.getLightColor('whiteColor'),
+        fontFamily: 'Montserrat-Light',
+        marginTop: '2%'
+    },
+    TextInputHeaderText: {
+        fontSize: 16,
+        color: Colors.getLightColor('secondaryColor'),
+        fontFamily: 'Montserrat-Light',
+    },
+    TextInputField: {
+        marginVertical: '1%',
+        borderRadius: 15,
+        width: '100%',
+    },
+    iconsandInputView: {
+        width: '100%',
+        flexDirection: 'row',
+        marginLeft: '2%'
+    },
+    errorText: {
+        width: '90%',
+        marginHorizontal: '5%',
+        fontFamily: 'Montserrat-Italic',
+        fontSize: 12,
+        color: Colors.getLightColor('mustardColor')
+    },
+    forgotView: {
+        flexDirection: 'row',
+        width: '95%',
+        justifyContent: 'space-between',
+    },
+    PlaceholderStyling: {
+        width: '85%',
+        fontSize: 14,
+        color: Colors.getLightColor('whiteColor'),
+        alignSelf: 'center',
+    },
+    inputIconStyle: {
+        alignSelf: 'center',
+        marginRight: '3%',
+        marginLeft: '3%'
+    },
+    touchableView: {
+        width: '70%',
+        backgroundColor: Colors.getLightColor('secondaryColor'),
+        marginHorizontal: '15%',
+        borderRadius: 50,
+        alignContent: 'center',
+        alignItems: 'center',
+        paddingVertical: '3%',
+    },
+    loginButtonView: {
+        // height: Dimensions.get('window').height * 0.16,
+        alignItems: 'center',
+        width: '100%',
+        justifyContent: 'space-around'
+    },
+    indicatorView: {
+        width: '70%',
+        marginHorizontal: '15%',
+        borderRadius: 50, alignSelf: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+        paddingVertical: '2%',
+    },
+    emailtext: {
+        color: Colors.getLightColor('whiteColor'),
+        fontSize: 14,
+        fontFamily: 'Montserrat-Medium',
+    },
+    imageViewBottom: {
+        // height: Dimensions.get('window').height * 0.20,
+        alignItems: 'flex-end',
+        width: '100%',
+        justifyContent: 'flex-end',
+    },
+    bottomImageStyle: {
+        width: Dimensions.get('window').width * 1,
+        height: Dimensions.get('window').height * 0.15,
+        marginTop: '1%'
+    },
+    forgotPassOpacity: {
+        flexDirection: 'row'
+    },
+    forgottext: {
+        color: Colors.getLightColor('whiteColor'),
+        fontFamily: 'Montserrat-Medium',
+    },
+    BottomLineView: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '90%',
+        marginVertical:'3%'
+    },
+    creatAccount: {
+        color: Colors.getLightColor('whiteColor'),
+        fontFamily: 'Montserrat-Medium',
+    },
+    LoginTouch: {
+        marginLeft: 5,
+        color: Colors.getLightColor('whiteColor'),
+        fontFamily: 'Montserrat-Medium',
+    }
+})
+export default styles;

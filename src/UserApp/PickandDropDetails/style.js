@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.getLightColor('whiteColor'),
     },
     contentContainer: {
-        flexGrow: 1,
+        flexGrow: 1, justifyContent:'space-between'
     },
     item: {
         marginVertical: 8,
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     },
     allowGps: {
         width: '100%',
-        height: Dimensions.get('window').height * 0.40,
+        height: Dimensions.get('window').height * 0.35,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -61,8 +61,14 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Medium'
     },
     locationsTextMainView: {
-        height: Dimensions.get('window').height * 0.35,
-        justifyContent: 'space-around'
+        height: Dimensions.get('window').height * 0.40,
+        justifyContent: 'space-around',
+        // backgroundColor:'grey',
+        borderTopLeftRadius:30,
+        borderTopRightRadius:30,
+        paddingBottom:5,
+        bottom:10,
+        backgroundColor:Colors.getLightColor('verticalLineColor')
     },
     currentLocationParentView: {
         width: '90%',
@@ -169,7 +175,7 @@ const styles = StyleSheet.create({
         width: '90%',
         marginHorizontal: '5%',
         marginVertical: '2%',
-        height: Dimensions.get('window').height * 0.40,
+        height: Dimensions.get('window').height * 0.35,
     },
     currentPosMarker: {
         padding: '1.5%',

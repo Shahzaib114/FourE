@@ -4,6 +4,7 @@ import styles from './style';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Geocoder from 'react-native-geocoding';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -22,6 +23,11 @@ import { useNavigation } from '@react-navigation/native';
 import CustomerHeader from '../CustomerHeader';
 import NetInfo from "@react-native-community/netinfo";
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+import DatePicker from 'react-native-date-picker'
+import moment from "moment";
+import { now } from 'moment/moment';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
     <View style={{
@@ -90,21 +96,26 @@ const PickDropDetails = ({ route }) => {
                 if (state.isInternetReachable === false) {
                     setNetModalVisible(true)
                 } else {
-                        ClientLayer.getInstance().getDataManager().GetValueForKey('customer_id', result => {
-                            let customerId = JSON.parse(result)
-                            confirmationBookingDispatch(ConfirmingCustomerBooking({
-                                addressFrom: currentLocationLabel,
-                                addressTo: destinationLabel,
-                                service_id: JSON.parse(selectedId),
-                                customer_id: JSON.parse(customerId),
-                                comments: 'This is confirmation of Booking from Customer',
-                            }))
-                        })
+                    ClientLayer.getInstance().getDataManager().GetValueForKey('customer_id', result => {
+                        let customerId = JSON.parse(result)
+                        confirmationBookingDispatch(ConfirmingCustomerBooking({
+                            addressFrom: currentLocationLabel,
+                            addressTo: destinationLabel,
+                            service_id: JSON.parse(selectedId),
+                            customer_id: JSON.parse(customerId),
+                            comments: 'This is confirmation of Booking from Customer',
+                        }))
+                    })
                 }
             })
 
         }
     }
+
+    const [date, setDate] = useState(new Date())
+    const [open, setOpen] = useState(false)
+    const [dateAdded, setDateAdded] = useState('')
+    const [minimumDate, setMinimumDate] = useState()
 
     const confirmationLoading = useSelector((state) => state.confirmBooking.runLoader)
     const confirmationData = useSelector((state) => state.confirmBooking.data)
@@ -258,6 +269,8 @@ const PickDropDetails = ({ route }) => {
     const markerRef = useRef();
 
     useEffect(() => {
+        setMinimumDate(moment().calendar())
+        console.log('LLL is', moment().calendar())
         getPermissions()
         dispatch(getCustomerServiceTypes())
     }, []);
@@ -304,7 +317,7 @@ const PickDropDetails = ({ route }) => {
                 setLocationPermissions(false)
             }
         } catch (err) {
-            console.warn(err)
+            console.log(err)
         }
     };
     const updateLiveLocation = async () => {
@@ -323,7 +336,7 @@ const PickDropDetails = ({ route }) => {
                     // console.log('full location is', json.results[0].formatted_address)
                     setDriverLocation(json.results[0].formatted_address)
                 })
-                .catch(error => console.warn(error));
+                .catch(error => console.log(error));
         })
     }
     const animate = (latitude, longitude) => {
@@ -550,7 +563,7 @@ const PickDropDetails = ({ route }) => {
             </Modal>
 
             <Modal
-                animationIn={'fadeIn'}
+                animationType='slide'
                 animationInTiming={800}
                 visible={netModalVisible}
                 transparent={false}
@@ -574,7 +587,7 @@ const PickDropDetails = ({ route }) => {
                                 Please Turn On Your Wifi or Check Your Mobile Data !
                             </Text>
                             <TouchableOpacity style={styles.netOkOpacity}
-                                onPress={() => { setNetModalVisible(false), navigation.goBack(y) }} >
+                                onPress={() => { setNetModalVisible(false), navigation.goBack() }} >
                                 <Text style={styles.netOkText}>
                                     Ok
                                 </Text>
@@ -637,7 +650,7 @@ const PickDropDetails = ({ route }) => {
                                         style={styles.currentPosMarker} />
                                 </Marker>
 
-                                {MarkerAnimations.map((number) =>
+                                {/* {MarkerAnimations.map((number) =>
                                     <Marker.Animated key={number.id}
                                         title={number.name}
                                         coordinate={{
@@ -657,7 +670,7 @@ const PickDropDetails = ({ route }) => {
                                         >
                                         </Image>
                                     </Marker.Animated>
-                                )}
+                                )} */}
 
                                 {destinationLocSelected ?
                                     (
@@ -725,6 +738,145 @@ const PickDropDetails = ({ route }) => {
                 }
 
                 <View style={styles.locationsTextMainView}>
+                    <Modal
+                        animationType='slide'
+                        animationInTiming={1200}
+                        visible={open}
+                        transparent={true}
+                    >
+                        <View style={{
+                            height: '50%',
+                            marginTop: 'auto',
+                            backgroundColor: Colors.getLightColor('verticalLineColor'),
+                            borderTopLeftRadius: 25,
+                            borderTopRightRadius: 25,
+                            justifyContent: 'space-around'
+                            , alignItems: 'center'
+                        }}>
+                            <Text style={{
+                                color: Colors.getLightColor('primaryColor'),
+                                fontSize: 25,
+                                fontFamily: 'Montserrat-Medium',
+                                marginTop: '5%',
+
+                            }}>
+                                Confirm Your Schedule Ride
+                            </Text>
+                            <DatePicker
+                                style={{
+                                    backgroundColor: Colors.getLightColor('verticalLineColor'),
+                                    width: Dimensions.get('window').width * 1,
+                                    height: Dimensions.get('window').height * 0.2,
+                                }}
+                                open={open}
+                                minimumDate={new Date(Date.now())}
+                                date={date}
+                                cancelText='Cancel'
+                                textColor={Colors.getLightColor('primaryColor')}
+                                androidVariant='iosClone'
+                                dividerHeight={5}
+                                onDateChange={(date) => {
+                                    // console.log('changed is', date)
+                                    setDateAdded(moment(date).format('LLL'))
+                                    setDate(date)
+                                    console.log('changed is', moment(date).format('LLL'))
+                                }}
+                                is24hourSource={'device'}
+                                fadeToColor={Colors.getLightColor('verticalLineColor')}
+                            />
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
+                                <TouchableOpacity onPress={() => {
+                                    setDateAdded('')
+                                    setOpen(false)
+                                }}
+                                    style={{
+                                        backgroundColor: Colors.getLightColor('primaryColor'), width: '45%', alignItems: 'center',
+                                        padding: '3%', borderRadius: 5
+                                    }}>
+                                    <Text style={{
+                                        color: Colors.getLightColor('secondaryColor'),
+                                        fontSize: 20,
+                                        fontFamily: 'Montserrat-Medium',
+                                    }}>
+                                        Go Now
+                                    </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => {
+                                    const now = moment()
+                                    console.log('current date is', moment().format("MMM Do YY"))
+                                    console.log('selected date is', moment(date).format("MMM Do YY"))
+                                    if (moment(date).format("MMM Do YY") === moment().format("MMM Do YY")) {
+                                        if (moment(date).format('LT') < moment().format('LT')) {
+                                            console.log('less', dateAdded)
+                                            alert('Please Select Date Again!')
+                                        } else if (moment(date).format('LT') == moment().format('LT')) {
+                                            alert('Your Scheduled Time is too soon, Please Select Date Again!')
+                                        } else if (moment(date).format('LT') > moment().format('LT')) {
+                                            setOpen(false)
+                                        }
+                                    } else {
+                                        setOpen(false)
+                                    }
+
+                                    // console.log('current date is',Date.now())
+
+                                }}
+                                    style={{
+                                        backgroundColor: Colors.getLightColor('primaryColor'), width: '45%', padding: '3%', alignItems: 'center',
+                                        borderRadius: 5
+                                    }}>
+                                    <Text style={{
+                                        color: Colors.getLightColor('secondaryColor'),
+                                        fontSize: 20,
+                                        fontFamily: 'Montserrat-Medium',
+                                    }}>
+                                        Confirm
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
+
+                    <TouchableOpacity onPress={() => setOpen(true)}
+                        style={{
+                            alignSelf: 'flex-end',
+                            marginHorizontal: '5%', marginVertical: '2%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start'
+                        }}>
+                        {dateAdded === '' ?
+                            (
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                                    <SimpleLineIcons style={{ alignSelf: 'center', }}
+                                        name='calendar' size={15} color='black'>
+                                    </SimpleLineIcons>
+                                    <Text style={{
+                                        marginHorizontal: '2.5%',
+                                        alignSelf: 'flex-end',
+                                        color: Colors.getLightColor('blackColor'),
+                                        fontSize: 15,
+                                        fontFamily: 'Montserrat-Medium',
+                                    }}>
+                                        Now
+                                    </Text>
+                                    <MaterialIcons style={{ alignSelf: 'center', }}
+                                        name='keyboard-arrow-down' size={15} color='black'>
+                                    </MaterialIcons>
+                                </View>
+                            )
+                            :
+                            (
+                                <View>
+                                    <Text style={{
+                                        color: Colors.getLightColor('blackColor'),
+                                        fontSize: 15,
+                                        fontFamily: 'Montserrat-Medium',
+
+                                    }}>
+                                        {dateAdded}
+                                    </Text>
+                                </View>
+                            )}
+
+                    </TouchableOpacity>
                     <View style={styles.currentLocationParentView}>
                         <Ionicons name='location' size={30} color={Colors.getLightColor('blackColor')}
                             style={styles.currentMarkerIcon} />

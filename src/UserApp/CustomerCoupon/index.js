@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, Dimensions, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Linking } from 'react-native'
+import { View, Text, ScrollView, Image, Dimensions,Modal, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Linking } from 'react-native'
 import React, { Component, useState, useEffect, Alert } from 'react';
 import styles from './style';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -7,6 +7,8 @@ import CustomeDrawerIcon from '../../customDrawerIcon';
 import Colors from '../../../utility/colors/Colors';
 import CustomeHeader from '../../customeHeader';
 import CustomerHeader from '../CustomerHeader';
+import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const CustomerCouponScreen = ({ navigation }) => {
 
@@ -33,6 +35,18 @@ const CustomerCouponScreen = ({ navigation }) => {
         },
 
     ]
+    const _validate = async () => {
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+            } else {
+                // postLoginData()
+            }
+        })
+    }
+
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
 
     return (
         <View style={styles.container}>
@@ -59,6 +73,41 @@ const CustomerCouponScreen = ({ navigation }) => {
                 </CustomerHeader>
             </View>
 
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
             <View style={styles.seconMainView}>
                 <View style={styles.applyCouponView}>
                     <TextInput
@@ -67,7 +116,8 @@ const CustomerCouponScreen = ({ navigation }) => {
                         placeholderTextColor={Colors.getLightColor('blackColor')}
                     >
                     </TextInput>
-                    <TouchableOpacity style={{ backgroundColor: Colors.getLightColor('primaryColor'), borderRadius: 5 }}>
+                    <TouchableOpacity onPress={()=> _validate()}
+                    style={{ backgroundColor: Colors.getLightColor('primaryColor'), borderRadius: 5 }}>
                         <Text style={styles.applyCouponText}>
                             Apply Coupon
                         </Text>

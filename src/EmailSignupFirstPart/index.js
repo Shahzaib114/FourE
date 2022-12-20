@@ -214,7 +214,7 @@ const EmailSignupFirstPart = ({ navigation, route }) => {
                     </View>
                 </View>
 
-                <View style={{ height: Dimensions.get('window').height * 0.30, }}>
+                <View>
                     {isLoading ?
                         (
                             <View style={styles.indicatorView}>

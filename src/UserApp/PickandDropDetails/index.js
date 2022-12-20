@@ -20,6 +20,8 @@ import ClientLayer from '../../../components/Layers/ClientLayer';
 import { ConfirmingCustomerBooking, onResetCurrentRide } from '../../../store/Actions/CustomerBookingConfirmation/ConfirmBooking';
 import { useNavigation } from '@react-navigation/native';
 import CustomerHeader from '../CustomerHeader';
+import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
     <View style={{
@@ -76,22 +78,31 @@ const PickDropDetails = ({ route }) => {
         return unsubscribe;
     }, [navigation]);
 
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const ValidationCheck = () => {
         setGoToNext(true)
         if ((destinationLabel.length == 0) || (selectedId == null)) {
             alert('Please Enter Correct Details!')
         }
         else {
-            ClientLayer.getInstance().getDataManager().GetValueForKey('customer_id', result => {
-                let customerId = JSON.parse(result)
-                confirmationBookingDispatch(ConfirmingCustomerBooking({
-                    addressFrom: currentLocationLabel,
-                    addressTo: destinationLabel,
-                    service_id: JSON.parse(selectedId),
-                    customer_id: JSON.parse(customerId),
-                    comments: 'This is confirmation of Booking from Customer',
-                }))
+            NetInfo.fetch().then(state => {
+                if (state.isInternetReachable === false) {
+                    setNetModalVisible(true)
+                } else {
+                        ClientLayer.getInstance().getDataManager().GetValueForKey('customer_id', result => {
+                            let customerId = JSON.parse(result)
+                            confirmationBookingDispatch(ConfirmingCustomerBooking({
+                                addressFrom: currentLocationLabel,
+                                addressTo: destinationLabel,
+                                service_id: JSON.parse(selectedId),
+                                customer_id: JSON.parse(customerId),
+                                comments: 'This is confirmation of Booking from Customer',
+                            }))
+                        })
+                }
             })
+
         }
     }
 
@@ -136,21 +147,30 @@ const PickDropDetails = ({ route }) => {
                 <Item
                     item={item}
                     onPress={() => {
-                        if (destinationLabel.length == 0) {
-                            get_Fare()
-                        }
-                        else if (destinationLabel.length != 0) {
-                            setSelectedId(item.type_id)
-                            get_Fare(item.type_id)
-                        }
-                    }
-                    }
+                        _checkInternetBrforeRidePick(item)
+                    }}
                     backgroundColor={{ backgroundColor }}
                     textColor={{ color }}
                 />
             </View>
         );
     };
+
+    const _checkInternetBrforeRidePick = async (item) => {
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+            } else {
+                if (destinationLabel.length == 0) {
+                    get_Fare()
+                }
+                else if (destinationLabel.length != 0) {
+                    setSelectedId(item.type_id)
+                    get_Fare(item.type_id)
+                }
+            }
+        })
+    }
 
     const fareLoading = useSelector((state) => state.fromandToFare.runLoader)
     const fareData = useSelector((state) => state.fromandToFare.data)
@@ -339,6 +359,27 @@ const PickDropDetails = ({ route }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [destinationModalVisible, setDestinationModalVisible] = useState(false);
 
+    const _checkInternetBrforeCurrent = async () => {
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+            } else {
+                setModalVisible(true)
+            }
+        })
+    }
+
+
+    const _checkInternetBrforeDestination = async () => {
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+            } else {
+                setDestinationModalVisible(true)
+            }
+        })
+    }
+
     const [distanceKM, setDistanceKM] = useState();
 
     return (
@@ -508,6 +549,41 @@ const PickDropDetails = ({ route }) => {
                 </View>
             </Modal>
 
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false), navigation.goBack(y) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
             <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.contentContainer}>
                 <CustomerHeader
                     label={"Book a Ride"}
@@ -652,7 +728,7 @@ const PickDropDetails = ({ route }) => {
                     <View style={styles.currentLocationParentView}>
                         <Ionicons name='location' size={30} color={Colors.getLightColor('blackColor')}
                             style={styles.currentMarkerIcon} />
-                        <Text onPress={() => setModalVisible(true)}
+                        <Text onPress={() => _checkInternetBrforeCurrent()}
                             style={styles.currentLocText}>
                             {currentLocationLabel}
                         </Text>
@@ -660,7 +736,7 @@ const PickDropDetails = ({ route }) => {
                     <View style={styles.destinationLocParentView}>
                         <FontAwesome name='location-arrow' size={30} color={Colors.getLightColor('blackColor')}
                             style={styles.destinationMarkerIcon} />
-                        <Text onPress={() => setDestinationModalVisible(true)}
+                        <Text onPress={() => _checkInternetBrforeDestination()}
                             style={styles.destinationParentText}>
                             {destinationLabel.length == 0 ?
                                 (

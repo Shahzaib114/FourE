@@ -1,5 +1,5 @@
 
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Linking, KeyboardAvoidingView, Platform, Dimensions } from 'react-native'
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Linking, KeyboardAvoidingView, Platform, Dimensions, Modal } from 'react-native'
 import React, { Component, useState, useEffect, Alert } from 'react';
 import styles from './style';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -13,6 +13,8 @@ import { registerUser } from '../../store/Actions/EmailSignup/signUp';
 import ClientLayer from '../../components/Layers/ClientLayer';
 import Colors from '../../utility/colors/Colors';
 import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const EmailSignup = ({ navigation, route }) => {
     const [licenseNumber, setLicenseNumber] = useState('');
     const [errorLicense, setErrorLicense] = useState('');
@@ -52,6 +54,9 @@ const EmailSignup = ({ navigation, route }) => {
             alert('Email Already Registered!')
         }
     }, [authLoading])
+
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const validate = () => {
         if ((licenseNumber == '') || (errorLicense != '')) {
             setErrorLicense('Please Input License Number!')
@@ -66,17 +71,17 @@ const EmailSignup = ({ navigation, route }) => {
             setErrorConfirmPass('Please Input User Confirm Pass!')
         }
         else {
-             // import NetInfo from "@react-native-community/netinfo";
-             NetInfo.fetch().then(state => {
+            // import NetInfo from "@react-native-community/netinfo";
+            NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
-                    console.log('network not available!')
-                    navigation.navigate('NetworkCheck')
+                    setNetModalVisible(true)
                 } else {
                     PostDriveDetails()
                 }
             })
         }
     }
+
     const handlePasswordVisibility = () => {
         if (rightIcon === 'eye-off') {
             setRightIcon('eye');
@@ -96,6 +101,7 @@ const EmailSignup = ({ navigation, route }) => {
             setConfirmPasswordVisibility(!confirmPasswordVisibility);
         }
     };
+
     const PostDriveDetails = () => {
         dispatch(registerUser({
             username: route.params.paramUserName, full_name: route.params.paramFullName,
@@ -108,6 +114,40 @@ const EmailSignup = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}
                 style={styles.scrollViewStyle} contentContainerStyle={styles.contentContainer}>

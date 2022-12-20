@@ -1,8 +1,7 @@
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Dimensions } from 'react-native'
+import { View, Text, ScrollView, TextInput, Modal, Image, TouchableOpacity, ImageBackground, ActivityIndicator, Dimensions } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import styles from './style';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImagePicker from 'react-native-image-crop-picker';
 import Colors from '../../utility/colors/Colors';
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +10,9 @@ import { fetchDriverProfileDetails } from '../../store/Actions/getUserProfile/ge
 import { PostDriverUpdatedProfile } from '../../store/Actions/DriverUpdatedData/postDriverDataUpdate';
 import CustomBackArrow from '../CustomBackArrow';
 import ClientLayer from '../../components/Layers/ClientLayer';
+import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const ProfileScreen = ({ route }) => {
     const navigation = useNavigation();
     const [displayView, setDisplayView] = useState(true);
@@ -20,11 +22,22 @@ const ProfileScreen = ({ route }) => {
     const data = useSelector((state) => state.driverProfile.data)
     const error = useSelector((state) => state.driverProfile.error)
     const dispatch = useDispatch();
+
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     useEffect(() => {
-        ClientLayer.getInstance().getDataManager().GetValueForKey('driver_id', result => {
-            setDriverId(JSON.parse(result))
-            dispatch(fetchDriverProfileDetails({ driver_id: JSON.parse(result) }))
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+                navigation.goBack()
+            } else {
+                ClientLayer.getInstance().getDataManager().GetValueForKey('driver_id', result => {
+                    setDriverId(JSON.parse(result))
+                    dispatch(fetchDriverProfileDetails({ driver_id: JSON.parse(result) }))
+                })
+            }
         })
+
     }, []);
     useEffect(() => {
         setDisplayView(loading)
@@ -53,26 +66,33 @@ const ProfileScreen = ({ route }) => {
         if (userName == '' && userMail === '' && userNumber === '' && profileImage.length === 0) {
             alert('please add some data to update')
         } else {
-            if (profileImage.length == 0) {
-                dispatch(PostDriverUpdatedProfile({
-                    full_name: userName,
-                    email_id: userMail,
-                    phone: userNumber,
-                    password: userPassword,
-                    profile_pic: null,
-                    id: driverId,
-                }))
-            }
-            else {
-                dispatch(PostDriverUpdatedProfile({
-                    full_name: userName,
-                    email_id: userMail,
-                    phone: userNumber,
-                    password: userPassword,
-                    profile_pic: profileImage,
-                    id: driverId,
-                }))
-            }
+            NetInfo.fetch().then(state => {
+                if (state.isInternetReachable === false) {
+                    setNetModalVisible(true)
+                } else {
+                    if (profileImage.length == 0) {
+                        dispatch(PostDriverUpdatedProfile({
+                            full_name: userName,
+                            email_id: userMail,
+                            phone: userNumber,
+                            password: userPassword,
+                            profile_pic: null,
+                            id: driverId,
+                        }))
+                    }
+                    else {
+                        dispatch(PostDriverUpdatedProfile({
+                            full_name: userName,
+                            email_id: userMail,
+                            phone: userNumber,
+                            password: userPassword,
+                            profile_pic: profileImage,
+                            id: driverId,
+                        }))
+                    }
+                }
+            })
+
         }
 
 
@@ -98,6 +118,40 @@ const ProfileScreen = ({ route }) => {
     }
     return (
         <View style={styles.container}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.contentContainer}>
                 <View style={styles.mainView}>
                     <CustomBackArrow />
@@ -118,7 +172,7 @@ const ProfileScreen = ({ route }) => {
                                             style={styles.beforeImageStyle}
                                             imageStyle={{ borderRadius: 30 }}
                                         >
-                                            <TouchableOpacity style={{backgroundColor:Colors.getLightColor('verticalLineColor'), borderRadius:5}} onPress={() => selectProfileImage()}>
+                                            <TouchableOpacity style={{ backgroundColor: Colors.getLightColor('verticalLineColor'), borderRadius: 5 }} onPress={() => selectProfileImage()}>
                                                 <SimpleLineIcons name='camera' size={20} color={Colors.getLightColor('primaryColor')} style={styles.camerIconStyle} />
                                             </TouchableOpacity>
                                         </ImageBackground>
@@ -239,7 +293,7 @@ const ProfileScreen = ({ route }) => {
                             </View>
                             <View>
                                 <TouchableOpacity onPress={() =>
-                                alert("Feature Under Maintenance!")
+                                    alert("Feature Under Maintenance!")
                                     // navigation.navigate('VehicleInfo',
                                     //     {
                                     //         paramSkip: true,

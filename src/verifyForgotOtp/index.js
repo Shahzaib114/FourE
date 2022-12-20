@@ -1,7 +1,8 @@
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, ActivityIndicator, Alert, Modal } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import styles from './style';
 import Feather from 'react-native-vector-icons/Feather';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSelector, useDispatch } from 'react-redux';
 import { PostingForgotPasswordOTP } from '../../store/Actions/ForgotOtp/PostForgotOtp';
@@ -56,7 +57,8 @@ const VerifyForgotOtp = ({ navigation, route }) => {
              NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
                     console.log('network not available!')
-                    navigation.navigate('NetworkCheck')
+                    setNetModalVisible(true)
+                    // navigation.navigate('NetworkCheck')
                 } else {
                     dispatch(PostingForgotPasswordOTP({ opt: driverOtp }))
                 }
@@ -80,8 +82,7 @@ const VerifyForgotOtp = ({ navigation, route }) => {
     const postResendRequest = () => {
         NetInfo.fetch().then(state => {
             if (state.isInternetReachable === false) {
-                console.log('network not available!')
-                navigation.navigate('NetworkCheck')
+                setNetModalVisible(true)
             } else {
                 dispatch(ResendOTPRequest({ email: route.params.paramDriverMail }))
             }
@@ -93,9 +94,46 @@ const VerifyForgotOtp = ({ navigation, route }) => {
     const timerCallbackFunc = (timerFlag) => {
         setTimerEnd(timerFlag)
     }
+    const [netModalVisible, setNetModalVisible] = useState(false)
 
     return (
         <View style={styles.container}>
+            
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
             <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.contentContainer}>
                 <View style={styles.HeaderViewStyle}>
                     <View style={styles.carImageView}>

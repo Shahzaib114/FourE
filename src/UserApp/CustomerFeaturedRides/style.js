@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     },
     catContainer: {
         borderRadius: 12,
-        backgroundColor: Colors.getLightColor('silverColor'),
+        backgroundColor: Colors.getLightColor('lightBlueColor'),
         fontSize: 15,
         width: '45%',
         justifyContent: 'center',

@@ -1,7 +1,8 @@
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Linking, KeyboardAvoidingView, Platform, Dimensions } from 'react-native'
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Linking, KeyboardAvoidingView, Platform, Dimensions, Modal } from 'react-native'
 import React, { Component, useState, useEffect, Alert, useRef } from 'react';
 import styles from './style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSelector, useDispatch } from 'react-redux';
@@ -33,13 +34,13 @@ const CustomerVerifyForgotOTP = ({ navigation, route }) => {
         setIsLoading(authLoading)
         if (!authLoading && data != null) {
             onResetVerifyingCustomerForgotOTP()
-            if(data.data === 'error'){
+            if (data.data === 'error') {
                 alert('wrong credentials')
-            }else{
-                if(verfiyingOtp){
+            } else {
+                if (verfiyingOtp) {
                     navigation.replace('CustomerResetPass', { paramDriverMail: route.params.paramDriverMail })
-                    console.log('All ok', data)    
-                }    
+                    console.log('All ok', data)
+                }
             }
         }
         else if (!authLoading && error != null) {
@@ -64,10 +65,9 @@ const CustomerVerifyForgotOTP = ({ navigation, route }) => {
             // import NetInfo from "@react-native-community/netinfo";
             NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
-                    console.log('network not available!')
-                    navigation.navigate('NetworkCheck')
+                    setNetModalVisible(true)
                 } else {
-                    dispatch(verifyingCustomerForgotOTP({ opt: JSON.parse(driverOtp) }))
+                    dispatch(verifyingCustomerForgotOTP({ opt: driverOtp }))
                 }
             })
         }
@@ -86,11 +86,12 @@ const CustomerVerifyForgotOTP = ({ navigation, route }) => {
         }
     }, [resendLoading]);
 
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const postResendRequest = () => {
         NetInfo.fetch().then(state => {
             if (state.isInternetReachable === false) {
-                console.log('network not available!')
-                navigation.navigate('NetworkCheck')
+                setNetModalVisible(true)
             } else {
                 dispatch(ResendCustomerOTPRequest({ email: userMail }))
             }
@@ -107,6 +108,40 @@ const CustomerVerifyForgotOTP = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.contentContainer}>
                 <View style={styles.HeaderViewStyle}>
                     <View style={styles.carImageView}>

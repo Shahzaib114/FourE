@@ -1,5 +1,5 @@
 import React, { useState, } from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, PermissionsAndroid, } from 'react-native'
+import { View, Text, ImageBackground, TouchableOpacity, PermissionsAndroid, Modal, Image } from 'react-native'
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from "./style";
@@ -10,6 +10,9 @@ import StarRating from 'react-native-star-rating-widget';
 import ClientLayer from '../../components/Layers/ClientLayer';
 import RNPusherPushNotifications from "react-native-pusher-push-notifications";
 import { Switch } from 'react-native-gesture-handler';
+import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const CustomDrawer = (props) => {
     const navigation = useNavigation()
     const [userName, setUserName] = useState('Shahzaib Younus');
@@ -17,25 +20,34 @@ const CustomDrawer = (props) => {
     const onStarRatingPress = (rating) => {
         setCustomStarRating(rating)
     }
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const sessionHandle = () => {
-        ClientLayer.getInstance().getDataManager().GetValueForKey('locationAllowed', isActive => {
-            let is_active = JSON.parse(isActive)
-            console.log(is_active)
-            if (is_active === false || is_active === undefined) {
-                alert('Kindly Turn off your Get Rides Activity, so you can not recieve rides anymore!')
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
             } else {
-                ClientLayer.getInstance().getDataManager().SaveValueForKey('started', JSON.stringify(null))
-                ClientLayer.getInstance().getDataManager().SaveValueForKey('type', JSON.stringify(null))
-                ClientLayer.getInstance().getDataManager().SaveValueForKey('notificationJobId', JSON.stringify(null))
-                ClientLayer.getInstance().getDataManager().SaveValueForKey('alreadyStarted', JSON.stringify(null))
-                ClientLayer.getInstance().getDataManager().SaveValueForKey('driver_id', JSON.stringify(null));
-                ClientLayer.getInstance().getDataManager().GetValueForKey('driverInstanceId', instanceId => {
-                    let id = JSON.parse(instanceId)
-                    unsubscribe(id)
+                ClientLayer.getInstance().getDataManager().GetValueForKey('locationAllowed', isActive => {
+                    let is_active = JSON.parse(isActive)
+                    console.log(is_active)
+                    if (is_active === false || is_active === undefined) {
+                        alert('Kindly Turn off your Get Rides Activity, so you can not recieve rides anymore!')
+                    } else {
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('started', JSON.stringify(null))
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('type', JSON.stringify(null))
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('notificationJobId', JSON.stringify(null))
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('alreadyStarted', JSON.stringify(null))
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('driver_id', JSON.stringify(null));
+                        ClientLayer.getInstance().getDataManager().GetValueForKey('driverInstanceId', instanceId => {
+                            let id = JSON.parse(instanceId)
+                            unsubscribe(id)
+                        })
+                        navigationhandle()
+                    }
                 })
-                navigationhandle()
             }
         })
+
 
     }
     const unsubscribe = interest => {
@@ -57,6 +69,40 @@ const CustomDrawer = (props) => {
 
     return (
         <View style={{ flex: 1 }}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <View style={styles.secondaryView}>
 
                 <View style={styles.imageView}>

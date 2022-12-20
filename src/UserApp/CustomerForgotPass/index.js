@@ -1,16 +1,18 @@
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, ActivityIndicator, Alert, Modal } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import styles from './style';
 import Feather from 'react-native-vector-icons/Feather';
 import { useSelector, useDispatch } from 'react-redux';
 import { PostingCustomerForgotPassword } from '../../../store/Actions/CustomerForgotPass/ForgotPasswordMail';
 import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Colors from '../../../utility/colors/Colors';
+
 const CustomerForgotPass = ({ navigation, route }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [errormsgMail, setErrorMsgMail] = useState('');
     const [userMail, setUserMail] = useState('');
     const [forgotPass, setForgotPass] = useState(false);
-
 
     const authLoading = useSelector((state) => state.customerForgotPass.runLoader)
     const data = useSelector((state) => state.customerForgotPass.data)
@@ -38,6 +40,8 @@ const CustomerForgotPass = ({ navigation, route }) => {
         return unsubscribe;
     }, [navigation]);
 
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const postEmail = () => {
         setForgotPass(true)
         let reg = /^\S*$/;
@@ -51,8 +55,7 @@ const CustomerForgotPass = ({ navigation, route }) => {
             // import NetInfo from "@react-native-community/netinfo";
             NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
-                    console.log('network not available!')
-                    navigation.navigate('NetworkCheck')
+                    setNetModalVisible(true)                
                 } else {
                     dispatch(PostingCustomerForgotPassword({ email: userMail }))
                 }
@@ -63,6 +66,40 @@ const CustomerForgotPass = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
+                <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.contentContainer}>
                 <View style={styles.HeaderViewStyle}>
                     <View style={styles.carImageView}>

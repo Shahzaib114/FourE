@@ -287,6 +287,7 @@ const CustomeHeader = (props) => {
             if (isType == null) {
                 setIsEnabled(previousState => !previousState)
                 if (isEnabled === false || isEnabled === undefined) {
+                    console.log('is enabled inside false')
                     ClientLayer.getInstance().getDataManager().SaveValueForKey('locationAllowed', JSON.stringify(false))
                     locationCalling(false)
                     ClientLayer.getInstance().getDataManager().GetValueForKey('driverInstanceId', instanceId => {
@@ -302,6 +303,7 @@ const CustomeHeader = (props) => {
                     })
 
                 } else if (isEnabled === true) {
+                    console.log('is enabled inside true')
                     ClientLayer.getInstance().getDataManager().SaveValueForKey('locationAllowed', JSON.stringify(true))
                     locationCalling(true)
                     ClientLayer.getInstance().getDataManager().GetValueForKey('driverInstanceId', instanceId => {
@@ -321,8 +323,13 @@ const CustomeHeader = (props) => {
             }
         })
     }
+    const _stopLocations = async () => {
+        await BackgroundJob.stop()
+        setIsEnabled(false)
+        ClientLayer.getInstance().getDataManager().SaveValueForKey('locationAllowed', JSON.stringify(true))
+    }
 
-    const toggleSwitch = () => {
+    const toggleSwitch = async () => {
         NetInfo.fetch().then(state => {
             if (state.isInternetReachable === false) {
                 console.log('network not available!')
@@ -333,6 +340,7 @@ const CustomeHeader = (props) => {
                         { text: "OK", onPress: () => console.log("OK Pressed") }
                     ]
                 )
+                _stopLocations()
             } else {
                 if (getLocation) {
                     geoLocationON()

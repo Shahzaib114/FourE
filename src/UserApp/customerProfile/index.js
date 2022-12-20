@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Dimensions } from 'react-native'
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator,Image,Modal, Dimensions } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import styles from './style';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -10,6 +10,9 @@ import Colors from '../../../utility/colors/Colors';
 import CustomBackArrow from '../../CustomBackArrow';
 import { _CustomerProfile } from '../../../store/Actions/CustomerProfile/CustomerProfile';
 import { _CustomerProfileUpdate } from '../../../store/Actions/CustomerUpdateProfile/CustomerProfileUpdate';
+import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const CustomerProfileScreen = () => {
     const navigation = useNavigation();
     const [displayView, setDisplayView] = useState(true);
@@ -20,11 +23,21 @@ const CustomerProfileScreen = () => {
     const error = useSelector((state) => state.profileData.error)
     const dispatch = useDispatch();
 
+
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     useEffect(() => {
-        ClientLayer.getInstance().getDataManager().GetValueForKey('customer_id', result => {
-            setCustomerId(JSON.parse(result))
-            let id = JSON.parse(result)
-            dispatch(_CustomerProfile({ customer_id: id }))
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+                
+            } else {
+                ClientLayer.getInstance().getDataManager().GetValueForKey('customer_id', result => {
+                    setCustomerId(JSON.parse(result))
+                    let id = JSON.parse(result)
+                    dispatch(_CustomerProfile({ customer_id: id }))
+                })
+            }
         })
     }, []);
 
@@ -105,6 +118,40 @@ const CustomerProfileScreen = () => {
 
     return (
         <View style={styles.container}>
+             <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false),navigation.goBack() }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.contentContainer}>
                 <View style={styles.mainView}>
                     <CustomBackArrow />

@@ -8,7 +8,7 @@ import {
     ImageBackground,
     Dimensions,
     PermissionsAndroid,
-    ActivityIndicator
+    ActivityIndicator,
 } from 'react-native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -22,6 +22,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { DriverVehicleDetails } from '../../store/Actions/vehicleInfo/uploadVehiceInformartion';
 import ClientLayer from '../../components/Layers/ClientLayer';
 import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const UploadFiles = ({ navigation, route }) => {
     const [cnicFrontImage, setCnicFrontImage] = useState('');
     const [cnicBackImage, setCnicBackImage] = useState('');
@@ -81,6 +83,8 @@ const UploadFiles = ({ navigation, route }) => {
         }
     }, [authLoading]);
 
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const postVehicleDetails = () => {
         if (cnicFrontImage.length === 0) {
             alert('Please Add CNIC Front Image!')
@@ -101,14 +105,7 @@ const UploadFiles = ({ navigation, route }) => {
             // import NetInfo from "@react-native-community/netinfo";
             NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
-                    console.log('network not available!')
-                    Alert.alert(
-                        "No Internet",
-                        "Please Turn On Your Wifi or Recharge your Mobile Data",
-                        [
-                            { text: "OK", onPress: () => console.log("OK Pressed") }
-                        ]
-                    )
+                    setNetModalVisible(true)
                 } else {
                     dispatch(DriverVehicleDetails({
                         service_type: route.params.paramServiceType, vehicle_number: route.params.paramNumber,
@@ -346,6 +343,40 @@ const UploadFiles = ({ navigation, route }) => {
     }
     return (
         <View style={{ flex: 1 }}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView style={{ backgroundColor: Colors.getLightColor('primaryColor') }} contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={{ height: Dimensions.get("screen").height * 0.75, }}>
                     <CustomBackArrow />

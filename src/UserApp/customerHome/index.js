@@ -1,4 +1,4 @@
-import { Dimensions, View, Text, ScrollView, Image, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Linking, } from 'react-native'
+import { Dimensions, View, Text, ScrollView, Image, TextInput, Modal, TouchableOpacity, ImageBackground, ActivityIndicator, Linking, } from 'react-native'
 import React, { useState, useEffect, Alert, useRef } from 'react';
 import CustomeDrawerIcon from '../../customDrawerIcon';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -22,12 +22,14 @@ import Animated, {
 import ClientLayer from '../../../components/Layers/ClientLayer';
 import PushNotification from 'react-native-push-notification';
 import messaging from '@react-native-firebase/messaging';
+import NetInfo from "@react-native-community/netinfo";
 
 const CustomerHomePage = (route) => {
     const navigation = useNavigation()
     const [rideStatus, setRideStatus] = useState('')
     const [rideStatusVisible, setRideStatusVisible] = useState(false);
     const [navigationPath, setNavigationPath] = useState('');
+    const [netModalVisible, setNetModalVisible] = useState(false)
 
     const [destination, setDestination] = useState({
         latitude: 10,
@@ -158,17 +160,29 @@ const CustomerHomePage = (route) => {
     };
 
     const pressedOnRide = async () => {
-        PushNotification.cancelAllLocalNotifications()
-        navigation.navigate(navigationPath)
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+            } else {
+                PushNotification.cancelAllLocalNotifications()
+                navigation.navigate(navigationPath)
+            }
+        })
     }
 
     const _gotoBookRide = async () => {
-        if (rideStatusVisible) {
-            alert('Please Complete Your Ongoing Ride, and try again!')
-        }
-        else {
-            navigation.navigate('PickDropDetails')
-        }
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+            } else {
+                if (rideStatusVisible) {
+                    alert('Please Complete Your Ongoing Ride, and try again!')
+                }
+                else {
+                    navigation.navigate('PickDropDetails')
+                }
+            }
+        })
     }
 
     useEffect(() => {
@@ -195,6 +209,40 @@ const CustomerHomePage = (route) => {
 
     return (
         <View style={{ flex: 1 }}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet, Last Location Shared
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Rider will arrive at your last location. To track Rider, Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView
                 nestedScrollEnabled={true}
                 keyboardShouldPersistTaps='handled'

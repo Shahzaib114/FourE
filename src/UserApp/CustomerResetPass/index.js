@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, SafeAreaView, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Linking, KeyboardAvoidingView, Platform, Dimensions } from 'react-native'
+import { View, Text, ScrollView, Image, SafeAreaView, TextInput, TouchableOpacity, ImageBackground, ActivityIndicator, Linking, KeyboardAvoidingView, Platform, Dimensions, Modal } from 'react-native'
 import React, { Component, useState, useEffect, Alert } from 'react';
 import styles from './style';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -7,6 +7,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { onResetCustomerResetPassword, updatingCustomerResetPassword } from '../../../store/Actions/CustomerResetPass/postResetPassword';
 import Colors from '../../../utility/colors/Colors';
 import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const CustomerResetPass = ({ navigation, route }) => {
     const [passwordVisibility, setPasswordVisibility] = useState(true);
     const [rightIcon, setRightIcon] = useState('eye-off');
@@ -26,6 +28,8 @@ const CustomerResetPass = ({ navigation, route }) => {
     const error = useSelector((state) => state.customerResetPass.error);
     const dispatch = useDispatch();
 
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const ResetPassWordFunction = () => {
         setResetPass(true)
         let reg = /^\S*$/;
@@ -42,8 +46,7 @@ const CustomerResetPass = ({ navigation, route }) => {
              // import NetInfo from "@react-native-community/netinfo";
              NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
-                    console.log('network not available!')
-                    navigation.navigate('NetworkCheck')
+                    setNetModalVisible(true)                
                 } else {
                     dispatch(updatingCustomerResetPassword({ email: route.params.paramDriverMail, password: userPass, password_confirmation: userConfirmPass }))
                 }
@@ -95,6 +98,40 @@ const CustomerResetPass = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1 }}>
+               <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.contentContainer}>
                 <View style={styles.HeaderViewStyle}>
                     <View style={styles.carImageView}>

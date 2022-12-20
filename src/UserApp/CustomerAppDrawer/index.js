@@ -1,5 +1,5 @@
 import React, { useState, } from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, } from 'react-native'
+import { View, Text, ImageBackground, TouchableOpacity, Image, Modal } from 'react-native'
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import styles from "./style";
@@ -10,6 +10,9 @@ import ClientLayer from '../../../components/Layers/ClientLayer';
 import Colors from '../../../utility/colors/Colors';
 import RNPusherPushNotifications from "react-native-pusher-push-notifications";
 import { useEffect } from 'react';
+import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const CustomerAppDrawer = (props) => {
     const navigation = useNavigation()
     const [userName, setUserName] = useState('Shahzaib Younus');
@@ -37,42 +40,86 @@ const CustomerAppDrawer = (props) => {
         navigation.replace('CustomerLogin')
     }
 
-    useEffect(()=>{
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
+    useEffect(() => {
         ClientLayer.getInstance().getDataManager().GetValueForKey('rideOnTheWay', result => {
             let isStarted = JSON.parse(result)
             console.log('rise is', isStarted)
             if (isStarted === 'OTW') {
                 setRideStatusVisible(true)
-            }else{
+            } else {
                 setRideStatusVisible(false)
             }
         })
     })
 
     const sessionHandle = () => {
-        if (rideStatusVisible) {
-            alert('Please Complete Your Ongoing Ride, and try again!')
-        }else{
-            ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
-            ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
-            ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify(null))
-            ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
-            ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
-            ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(null))
-            ClientLayer.getInstance().getDataManager().SaveValueForKey('RiderOTW', JSON.stringify(null))
-            ClientLayer.getInstance().getDataManager().SaveValueForKey('customer_id', JSON.stringify(null));
-            ClientLayer.getInstance().getDataManager().SaveValueForKey('driver_id', JSON.stringify(null));
-            ClientLayer.getInstance().getDataManager().GetValueForKey('customerInstanceId', instanceId => {
-                let id = JSON.parse(instanceId)
-                unsubscribe(id)
-            })
-            navigationhandle()
-        }
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+            } else {
+                if (rideStatusVisible) {
+                    alert('Please Complete Your Ongoing Ride, and try again!')
+                } else {
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('RiderOTW', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('customer_id', JSON.stringify(null));
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('driver_id', JSON.stringify(null));
+                    ClientLayer.getInstance().getDataManager().GetValueForKey('customerInstanceId', instanceId => {
+                        let id = JSON.parse(instanceId)
+                        unsubscribe(id)
+                    })
+                    navigationhandle()
+                }
+            }
+        })
+
     }
 
 
     return (
         <View style={{ flex: 1 }}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
             <View style={styles.secondaryView}>
                 <View style={styles.imageView}>
                     <ImageBackground source={require('../../../assets/Images/user.png')}

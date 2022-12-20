@@ -16,7 +16,6 @@ const NetworkCheck = (props) => {
             animationInTiming={800}
             visible={true}
             transparent={true}
-            // style={{backgroundColor:'black'}}
         >
             <View style={styles.container}>
                 <View>

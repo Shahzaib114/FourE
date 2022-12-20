@@ -33,6 +33,8 @@ import RNPusherPushNotifications from "react-native-pusher-push-notifications";
 import CustomerHeader from '../CustomerHeader';
 import PushNotification from 'react-native-push-notification';
 import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const CurrentRideDetails = ({ route, delay }) => {
     const navigation = useNavigation();
     const MarkerAnimations = [
@@ -96,7 +98,6 @@ const CurrentRideDetails = ({ route, delay }) => {
             ) {
                 console.log("App has come to the foreground!");
             }
-
             appState.current = nextAppState;
             console.log("AppState", appState.current);
             if (appState.current == 'active') {
@@ -303,12 +304,22 @@ const CurrentRideDetails = ({ route, delay }) => {
         }
     }, [loading])
 
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const getDriverLocation = (DId, JId) => {
-        setDriverLocationCheck(true)
-        dispatch(gettingRiderDetails({
-            driver_id: DId,
-            job_id: JId,
-        }))
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+                setStopInterval(false)
+            } else {
+                setDriverLocationCheck(true)
+                dispatch(gettingRiderDetails({
+                    driver_id: DId,
+                    job_id: JId,
+                }))
+            }
+        })
+       
     }
 
     const [stopInterval, setStopInterval] = useState()
@@ -487,6 +498,41 @@ const CurrentRideDetails = ({ route, delay }) => {
                             Do not cancel
                         </Text>
                     </TouchableOpacity>
+                </View>
+            </Modal>
+
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false), navigation.goBack() }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
             </Modal>
             <ScrollView style={styles.scrollViewStyle} contentContainerStyle={styles.contentContainer}>

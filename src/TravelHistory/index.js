@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, PermissionsAndroid, AppState } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity,Image, ActivityIndicator, PermissionsAndroid, AppState, Modal } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import styles from './style';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -25,6 +25,8 @@ import { useRef } from 'react';
 import messaging from '@react-native-firebase/messaging';
 export const gotoNext = false
 import BackgroundJob from 'react-native-background-actions';
+import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 // global.foo = ['foo']
 const TravelHistory = ({ route }) => {
@@ -211,15 +213,25 @@ const TravelHistory = ({ route }) => {
             console.log('null')
         }
     })
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             setOnCurrentPage('focused')
             onResetRideCompleted()
             onResetRideStarted()
-            ClientLayer.getInstance().getDataManager().GetValueForKey('driver_id', result => {
-                let id = JSON.parse(result)
-                dispatch(fetchTravelHistory({ driver_id: JSON.parse(id) }))
+            NetInfo.fetch().then(state => {
+                if (state.isInternetReachable === false) {
+                    setNetModalVisible(true)
+                    setTravelHistoryResponse(false)
+                } else {
+                    ClientLayer.getInstance().getDataManager().GetValueForKey('driver_id', result => {
+                        let id = JSON.parse(result)
+                        dispatch(fetchTravelHistory({ driver_id: JSON.parse(id) }))
+                    })
+                }
             })
+          
             ClientLayer.getInstance().getDataManager().GetValueForKey('alreadyStarted', start => {
                 let isStarted = JSON.parse(start)
                 if (isStarted == 'jobAcceptance') {
@@ -288,9 +300,17 @@ const TravelHistory = ({ route }) => {
             console.log('notifiaction on foreground', NotificationData(txt))
         })
 
-        ClientLayer.getInstance().getDataManager().GetValueForKey('driver_id', result => {
-            dispatch(fetchTravelHistory({ driver_id: JSON.parse(result) }))
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+                setTravelHistoryResponse(false)
+            } else {
+                ClientLayer.getInstance().getDataManager().GetValueForKey('driver_id', result => {
+                    dispatch(fetchTravelHistory({ driver_id: JSON.parse(result) }))
+                })
+            }
         })
+
 
     }, []);
     const getPermissions = async () => {
@@ -321,7 +341,14 @@ const TravelHistory = ({ route }) => {
     }, [loading])
 
     const gettingDetails = (id) => {
-        detailsDispatch(gettingTravelingDetails({ job_id: id }))
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+            } else {
+                detailsDispatch(gettingTravelingDetails({ job_id: id }))
+            }
+        })
+        
     }
     const detailsLoading = useSelector((state) => state.travelHistoryDetails.runLoader)
     const detailsData = useSelector((state) => state.travelHistoryDetails.data)
@@ -338,11 +365,17 @@ const TravelHistory = ({ route }) => {
     }, [detailsLoading])
     const [refreshing, setRefreshing] = useState(false);
     const refreshEnd = () => {
-        setRefreshing(true)
-        ClientLayer.getInstance().getDataManager().GetValueForKey('driver_id', result => {
-            dispatch(fetchTravelHistory({ driver_id: JSON.parse(result) }))
+        NetInfo.fetch().then(state => {
+            if (state.isInternetReachable === false) {
+                setNetModalVisible(true)
+            } else {
+                setRefreshing(true)
+                ClientLayer.getInstance().getDataManager().GetValueForKey('driver_id', result => {
+                    dispatch(fetchTravelHistory({ driver_id: JSON.parse(result) }))
+                })
+                setRefreshing(false)
+            }
         })
-        setRefreshing(false)
     }
 
     return (
@@ -371,6 +404,41 @@ const TravelHistory = ({ route }) => {
                 7 : Booking Ids of your Trips`
                 }
             ></CustomeHeader>
+
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
 
             {displayView || travelHistoryResponse ?
                 (

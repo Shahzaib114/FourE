@@ -20,5 +20,6 @@ export default {
     silverColor: '#8A8A8A',
     lightWhiteColor:'#F1F1F1',
     verticalLineColor:'#B5D5FB',
+    lightBlueColor: '#c2c3d5',
     
 }

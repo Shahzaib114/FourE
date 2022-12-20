@@ -421,6 +421,7 @@ class DataService {
             }
         })
             .then(function (response) {
+                console.log('response is', response.data)
                 if (response.data.success) {
                     successCallBack(response.data.message)
                 } else {
@@ -451,7 +452,6 @@ class DataService {
 
     //Customer Signup Details
     CustomerSignupDetails(payload, successCallBack, errorCallBack) {
-        console.log(payload)
         axios.post(CUSTOMER_SIGNUP,
             {
                 first_name: payload.first_name,
@@ -462,7 +462,6 @@ class DataService {
                 c_password: payload.c_password,
             }
         ).then(function (response) {
-            console.log('response is', response.data)
             if (response.data.success) {
                 successCallBack(response.data)
             } else {

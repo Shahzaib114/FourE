@@ -1,5 +1,5 @@
 
-import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, ActivityIndicator, Platform, Dimensions } from 'react-native'
+import { View, Text, ScrollView, Image, TextInput, TouchableOpacity, ActivityIndicator, Platform, Dimensions, Modal } from 'react-native'
 import React, { useState, useEffect, Alert } from 'react';
 import styles from './style';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -11,9 +11,15 @@ import ClientLayer from '../../../components/Layers/ClientLayer';
 import Colors from '../../../utility/colors/Colors';
 import { CustomerSignupDetails } from '../../../store/Actions/CustomerSignup/CustomerSignup';
 import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const CustomerSignup = ({ navigation, route }) => {
     const [userFirstName, setUserFirstName] = useState('');
+    const [userFirstNameError, setUserFirstNameError] = useState('');
+
     const [userLastName, setUserLastName] = useState('');
+    const [userLastNameError, setUserLastNameError] = useState('');
+
     const [userPhone, setuserPhone] = useState('');
     const [usermail, setUserMail] = useState('');
     const [userPass, setUserPass] = useState('');
@@ -43,32 +49,52 @@ const CustomerSignup = ({ navigation, route }) => {
                 ClientLayer.getInstance().getDataManager().SaveValueForKey('customer_id', JSON.stringify(data.data.id));
                 navigation.navigate('CustomerSignupOTP')
             }
-
         }
         else if (!authLoading && error != null) {
             alert('Credentials are Wrong', error)
         }
     }, [authLoading])
 
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const validate = () => {
         let reg = /^\S*$/;
-        if ((userPass.length == 0) || (userConfirmPass.length == 0) || (userFirstName.length == 0) || (userLastName.length == 0)) {
-            alert('Please fill the Empty field!')
+        if ((userFirstName == '') || (userFirstNameError != '')) {
+            setUserFirstNameError('Please add FirstName')
         }
-        else if ((errorPass != '') || (errorConfirmPass != '') || (errorphone != '') || (errorMail != '')) {
-            alert('Please enter correct data!')
+        else if ((userLastName == '') || (userLastNameError != '')) {
+            setUserLastNameError('Please add LastName')
         }
-        else {
-            // import NetInfo from "@react-native-community/netinfo";
-              NetInfo.fetch().then(state => {
-                if (state.isInternetReachable === false) {
-                    console.log('network not available!')
-                    navigation.navigate('NetworkCheck')
-                } else {
-                    PostDriveDetails()
-                }
-            })
+        else if ((userPhone == '') || (errorphone != '')) {
+            setErrorPhone('Please add Phone Number')
         }
+        else if ((usermail == '') || (errorMail != '')) {
+            setErrorMail('Please add Email')
+        }
+        else if ((userPass == '') || (errorPass != '')) {
+            seterrorPass('Please add Password')
+        }
+        else if ((userConfirmPass == '') || (errorConfirmPass != '')) {
+            setErrorConfirmPass('Please add Confirm Password')
+        }else{
+            PostDriveDetails()
+        }
+        // if ((userPass.length == 0) || (userConfirmPass.length == 0) || (userFirstName.length == 0) || (userLastName.length == 0)) {
+        //     alert('Please fill the Empty field!')
+        // }
+        // else if ((errorPass != '') || (errorConfirmPass != '') || (errorphone != '') || (errorMail != '')) {
+        //     alert('Please enter correct data!')
+        // }
+        // else {
+        //     // import NetInfo from "@react-native-community/netinfo";
+        //       NetInfo.fetch().then(state => {
+        //         if (state.isInternetReachable === false) {
+        //             setNetModalVisible(true)    
+        //         } else {
+        //             PostDriveDetails()
+        //         }
+        //     })
+        // }
     }
 
     const handlePasswordVisibility = () => {
@@ -102,11 +128,46 @@ const CustomerSignup = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
             <ScrollView showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}
                 style={styles.scrollViewStyle} contentContainerStyle={styles.contentContainer}>
                 <View style={styles.HeaderView}>
-                    <Image style={{resizeMode:'contain'}}
+                    <Image style={{ resizeMode: 'contain' }}
                         source={require('../../../assets/Images/FourELogoM.png')}>
                     </Image>
                     <Text style={styles.createtext}>
@@ -125,6 +186,12 @@ const CustomerSignup = ({ navigation, route }) => {
                                 underlineColorAndroid={"#E4EDF5"}
                                 keyboardType='default'
                                 onChangeText={txt => {
+                                    if (txt.length > 0) {
+                                        setUserFirstNameError('')
+                                    }
+                                    else if (txt == '') {
+                                        setUserFirstNameError('Please add FirstName')
+                                    }
                                     setUserFirstName(txt)
                                 }}
                                 style={styles.PlaceholderStyling}
@@ -132,6 +199,7 @@ const CustomerSignup = ({ navigation, route }) => {
                             </TextInput>
                         </View>
                         <Text style={styles.errorText}>
+                            {userFirstNameError}
                         </Text>
                     </View>
 
@@ -145,13 +213,19 @@ const CustomerSignup = ({ navigation, route }) => {
                                 underlineColorAndroid={"#E4EDF5"}
                                 keyboardType='default'
                                 onChangeText={txt => {
+                                    if (txt.length > 0) {
+                                        setUserLastNameError('')
+                                    }
+                                    else if (txt == '') {
+                                        setUserLastNameError('Please add LastName')
+                                    }
                                     setUserLastName(txt)
                                 }}
                                 style={styles.PlaceholderStyling}
                             />
                         </View>
                         <Text style={styles.errorText}>
-                            {/* {errorLicense} */}
+                            {userLastNameError}
                         </Text>
                     </View>
 
@@ -166,13 +240,15 @@ const CustomerSignup = ({ navigation, route }) => {
                                 keyboardType='decimal-pad'
                                 onChangeText={txt => {
                                     if (txt.length < 10) {
-                                        console.log("Phone is Not Correct");
                                         setErrorPhone('Number Not Correct')
                                     }
-                                    else {
-                                        setErrorPhone('');
-                                        setuserPhone(txt);
+                                    else if (txt.length > 0) {
+                                        setErrorPhone('')
                                     }
+                                    else if (txt == '') {
+                                        setErrorPhone('Please add FirstName')
+                                    }
+                                    setuserPhone(txt)
                                 }}
                                 style={styles.PlaceholderStyling}
                             />
@@ -192,6 +268,16 @@ const CustomerSignup = ({ navigation, route }) => {
                                 underlineColorAndroid={"#E4EDF5"}
                                 keyboardType='email-address'
                                 onChangeText={txt => {
+                                    let reg = /^\S*$/;
+                                    if (reg.test(txt) === false) {
+                                        setErrorMail('White Spaces Not Allowed!!')
+                                    }
+                                    else if (txt.length > 0) {
+                                        setErrorMail('')
+                                    }
+                                    else if (txt == '') {
+                                        setErrorMail('Please add FirstName')
+                                    }
                                     setUserMail(txt)
                                 }}
                                 style={styles.PlaceholderStyling}
@@ -213,14 +299,16 @@ const CustomerSignup = ({ navigation, route }) => {
                                 underlineColorAndroid={"#E4EDF5"}
                                 onChangeText={txt => {
                                     let reg = /^\S*$/;
-                                    let rjx = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,12}$/
                                     if (reg.test(txt) === false) {
                                         seterrorPass('White Spaces Not Allowed!!')
                                     }
-                                    else {
-                                        seterrorPass("");
-                                        setUserPass(txt)
+                                    else if (txt.length > 0) {
+                                        seterrorPass('')
                                     }
+                                    else if (txt == '') {
+                                        seterrorPass('Please add User Password')
+                                    }
+                                    setUserPass(txt)
                                 }}
                                 style={styles.PlaceholderStyling}
                             />
@@ -244,13 +332,20 @@ const CustomerSignup = ({ navigation, route }) => {
                                 secureTextEntry={confirmPasswordVisibility}
                                 underlineColorAndroid={"#E4EDF5"}
                                 onChangeText={txt => {
-                                    if (txt != userPass) {
+                                    let reg = /^\S*$/;
+                                    if (reg.test(txt) === false) {
+                                        setErrorConfirmPass('White Spaces Not Allowed!!')
+                                    }
+                                    else if (txt != userPass) {
                                         setErrorConfirmPass("PassWord did not Matched!")
                                     }
-                                    else {
-                                        setErrorConfirmPass("");
-                                        setUserConfirmPass(txt)
+                                    else if (txt.length > 0) {
+                                        setErrorConfirmPass('')
                                     }
+                                    else if (txt == '') {
+                                        setErrorConfirmPass('Please add User Password')
+                                    }
+                                    setUserConfirmPass(txt)
                                 }}
                                 style={styles.PlaceholderStyling}
                             />

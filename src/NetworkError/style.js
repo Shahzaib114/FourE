@@ -2,14 +2,14 @@ import { StyleSheet } from "react-native";
 import Colors from "../../utility/colors/Colors";
 
 const styles = StyleSheet.create({
-    container: {
+    netContainer: {
         justifyContent: 'space-evenly',
         alignItems: 'center',
         height: '100%',
         width: '100%',
         backgroundColor: Colors.getLightColor('primaryColor')
     },
-    parentView: {
+    netParentView: {
         backgroundColor: Colors.getLightColor('secondaryColor'),
         alignItems: 'center',
         alignSelf: 'center',
@@ -19,12 +19,12 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 5,
         paddingVertical: '10%'
     },
-    noInternetText: {
+    netNoInternetText: {
         color: Colors.getLightColor('primaryColor'),
         fontSize: 25,
         fontFamily: 'Montserrat-Medium',
     },
-    secondMainView: {
+    netSecondMainView: {
         backgroundColor: 'white',
         alignSelf: 'center',
         width: '100%',
@@ -35,13 +35,13 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center'
     },
-    turnOnWifiText: {
+    netTurnOnWifiText: {
         color: Colors.getLightColor('primaryColor'),
         fontSize: 20,
         fontFamily: 'Montserrat-Medium',
         textAlign: 'center'
     },
-    okOpacity: {
+    netOkOpacity: {
         width: '80%',
         backgroundColor: Colors.getLightColor('secondaryColor'),
         borderRadius: 25,
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: '5%'
     },
-    okText: {
+    netOkText: {
         color: Colors.getLightColor('primaryColor'),
         fontSize: 25,
         fontFamily: 'Montserrat-Medium',

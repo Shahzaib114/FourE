@@ -8,7 +8,8 @@ import {
     ScrollView,
     ActivityIndicator,
     Dimensions,
-    Alert
+    Alert,
+    Modal
 } from 'react-native';
 import CustomBackArrow from '../CustomBackArrow';
 import styles from './styles';
@@ -20,6 +21,8 @@ import Colors from '../../utility/colors/Colors';
 import { LogBox } from 'react-native';
 import CountDownTimer from 'react-native-countdown-timer-hooks';
 import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const ConfirmPass = ({ navigation }) => {
     const [inputText, setInputText] = useState('your Mail');
     const [checkSend, setCheckSend] = useState(false);
@@ -75,18 +78,13 @@ const ConfirmPass = ({ navigation }) => {
         }
     }, [loading])
 
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const postResendRequest = () => {
-         // import NetInfo from "@react-native-community/netinfo";
-         NetInfo.fetch().then(state => {
+        // import NetInfo from "@react-native-community/netinfo";
+        NetInfo.fetch().then(state => {
             if (state.isInternetReachable === false) {
-                console.log('network not available!')
-                Alert.alert(
-                    "No Internet",
-                    "Please Turn On Your Wifi or Recharge your Mobile Data",
-                    [
-                        { text: "OK", onPress: () => console.log("OK Pressed") }
-                    ]
-                )
+                setNetModalVisible(true)
             } else {
                 dispatch(ResendOTPRequest({ email: usermail }))
             }
@@ -101,14 +99,7 @@ const ConfirmPass = ({ navigation }) => {
             // import NetInfo from "@react-native-community/netinfo";
             NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
-                    console.log('network not available!')
-                    Alert.alert(
-                        "No Internet",
-                        "Please Turn On Your Wifi or Recharge your Mobile Data",
-                        [
-                            { text: "OK", onPress: () => console.log("OK Pressed") }
-                        ]
-                    )
+                    setNetModalVisible(true)
                 } else {
                     dispatch(getConfirmationCode({ opt: confirmOTP }))
                 }
@@ -125,6 +116,40 @@ const ConfirmPass = ({ navigation }) => {
     return (
         <ScrollView style={styles.scrollViewStyle}
             contentContainerStyle={styles.contentContainer}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <CustomBackArrow />
             <View style={styles.fourEImageView}>
                 <Image

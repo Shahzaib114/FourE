@@ -105,7 +105,7 @@ function DrawerUsrerData() {
           borderTopColor: Colors.getLightColor('lightGreyColor'),
         }
       }} />
-      <Drawer.Screen name="Wallet" component={DriverWalletScreen}
+      {/* <Drawer.Screen name="Wallet" component={DriverWalletScreen}
         options={{
           drawerIcon: ({ focused, size }) => (
             <AntDesign
@@ -117,7 +117,7 @@ function DrawerUsrerData() {
           drawerItemStyle: {
             borderBottomColor: Colors.getLightColor('lightGreyColor'),
           }
-        }} />
+        }} /> */}
       {/* <Drawer.Screen name="Map" component={MapScreen} options={{
         drawerIcon: ({ focused, size }) => (
           <Ionicons
@@ -201,7 +201,7 @@ function DrawerCustomerData() {
             borderBottomColor: Colors.getLightColor('lightGreyColor'),
           }
         }} /> */}
-      <Drawer.Screen name="Wallet" component={CustomerWalletScreen}
+      {/* <Drawer.Screen name="Wallet" component={CustomerWalletScreen}
         options={{
           drawerIcon: ({ focused, size }) => (
             <AntDesign
@@ -213,7 +213,7 @@ function DrawerCustomerData() {
           drawerItemStyle: {
             borderBottomColor: Colors.getLightColor('lightGreyColor'),
           }
-        }} />
+        }} /> */}
 
       <Drawer.Screen name="Coupons" component={CustomerCouponScreen} options={{
         drawerIcon: ({ focused, size }) => (
@@ -241,7 +241,7 @@ function DrawerCustomerData() {
         }
       }} />
 
-      {/* <Drawer.Screen name="UpComing Trips" component={CustomerUpComingTrips} options={{
+      <Drawer.Screen name="UpComing Trips" component={CustomerUpComingTrips} options={{
         drawerIcon: ({ focused, size }) => (
           <MaterialCommunityIcons
             name="chevron-triple-right"
@@ -252,7 +252,7 @@ function DrawerCustomerData() {
         drawerItemStyle: {
           borderBottomColor: Colors.getLightColor('lightGreyColor'),
         }
-      }} /> */}
+      }} />
       {/* <Drawer.Screen name="Trip Ended" component={AccountCreated} options={{
         drawerIcon: ({ focused, size }) => (
           <MaterialCommunityIcons

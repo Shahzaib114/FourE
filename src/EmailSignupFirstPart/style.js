@@ -8,11 +8,11 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.getLightColor('primaryColor'),
     },
     contentContainer: {
-        flexGrow: 1
+        flexGrow: 1, justifyContent:'space-between'
     },
     headerView: {
         width: '100%',
-        height: Dimensions.get('window').height * 0.22,
+        // height: Dimensions.get('window').height * 0.22,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     TextInputSection: {
-        height: Dimensions.get('window').height * 0.48,
+        // height: Dimensions.get('window').height * 0.48,
     },
     rowMainView: {
         flexDirection: 'row',
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         color: Colors.getLightColor('secondaryColor'),
         fontFamily: 'Montserrat-Medium',
+        marginVertical:'5%',
     },
     policyText: {
         width: '90%',

@@ -18,6 +18,8 @@ import Animated, {
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import PushNotification from 'react-native-push-notification';
 import messaging from '@react-native-firebase/messaging';
+import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const CustomerHeader = (props) => {
     const navigation = useNavigation();
@@ -28,6 +30,7 @@ const CustomerHeader = (props) => {
     const [navigationPath, setNavigationPath] = useState('');
     const [jobId, setJobId] = useState('');
     const appState = useRef(AppState.currentState);
+    const [netModalVisible, setNetModalVisible] = useState(false)
 
     return (
         <View style={styles.headerView}>

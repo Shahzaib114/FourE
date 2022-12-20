@@ -8,6 +8,7 @@ import {
     ScrollView,
     ActivityIndicator,
     Alert,
+    Modal
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -19,6 +20,7 @@ import ClientLayer from '../../../components/Layers/ClientLayer';
 import { CustomerValidation } from '../../../store/Actions/CustomerLogin/CustomerLogin';
 import RNPusherPushNotifications from "react-native-pusher-push-notifications";
 import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const CustomerLogin = ({ navigation, route, props }) => {
     const [userMail, setUserMail] = useState('');
@@ -102,6 +104,8 @@ const CustomerLogin = ({ navigation, route, props }) => {
         dispatch(CustomerValidation({ email: userMail, password: userPass }))
     }
 
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const validate = () => {
         if ((userMail.length == '') || (errormsgMail.length != '')) {
             setErrorMsgMail('Please Enter Mail')
@@ -113,8 +117,7 @@ const CustomerLogin = ({ navigation, route, props }) => {
             // import NetInfo from "@react-native-community/netinfo";
             NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
-                    console.log('network not available!'),
-                    navigation.navigate('NetworkCheck')
+                    setNetModalVisible(true)
                 } else {
                     postLoginData()
                 }
@@ -165,6 +168,40 @@ const CustomerLogin = ({ navigation, route, props }) => {
 
     return (
         <View style={styles.container}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}

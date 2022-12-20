@@ -8,7 +8,8 @@ import {
     ScrollView,
     ActivityIndicator,
     Dimensions,
-    Alert
+    Alert,
+    Modal
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { LogBox } from 'react-native';
@@ -20,6 +21,8 @@ import { ResendCustomerOTPRequest } from '../../../store/Actions/ResendCustomerS
 import { postCustomerConfirmationCode } from '../../../store/Actions/ValidateCustomerSignupOTP/ValidateCustomerOTP';
 import CountDownTimer from 'react-native-countdown-timer-hooks';
 import NetInfo from "@react-native-community/netinfo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 const CustomerSignupOTP = ({ navigation }) => {
     const [inputText, setInputText] = useState('your Mail');
     const [checkSend, setCheckSend] = useState(false);
@@ -74,12 +77,13 @@ const CustomerSignupOTP = ({ navigation }) => {
         }
     }, [loading])
 
+    const [netModalVisible, setNetModalVisible] = useState(false)
+
     const postResendRequest = () => {
         // import NetInfo from "@react-native-community/netinfo";
         NetInfo.fetch().then(state => {
             if (state.isInternetReachable === false) {
-                console.log('network not available!')
-                navigation.navigate('NetworkCheck')
+                setNetModalVisible(true)
             } else {
                 dispatch(ResendCustomerOTPRequest({
                     email: usermail
@@ -95,8 +99,7 @@ const CustomerSignupOTP = ({ navigation }) => {
         else {
             NetInfo.fetch().then(state => {
                 if (state.isInternetReachable === false) {
-                    console.log('network not available!')
-                    navigation.navigate('NetworkCheck')
+                    setNetModalVisible(true)
                 } else {
                     dispatch(postCustomerConfirmationCode({
                         opt: confirmOTP,
@@ -115,6 +118,40 @@ const CustomerSignupOTP = ({ navigation }) => {
     return (
         <ScrollView style={styles.scrollViewStyle}
             contentContainerStyle={styles.contentContainer}>
+                 <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={netModalVisible}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netParentView}>
+                            <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
+                            </AntDesign>
+                            <Text style={styles.netNoInternetText}>
+                                No Internet
+                            </Text>
+                        </View>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Turn On Your Wifi or Check Your Mobile Data !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => { setNetModalVisible(false) }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <View style={styles.logoImageView}>
                 <Image
                     source={require('../../../assets/Images/FourELogo.png')}>

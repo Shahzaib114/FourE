@@ -63,11 +63,10 @@ const styles = StyleSheet.create({
     locationsTextMainView: {
         height: Dimensions.get('window').height * 0.40,
         justifyContent: 'space-around',
-        // backgroundColor:'grey',
         borderTopLeftRadius:30,
         borderTopRightRadius:30,
         paddingBottom:5,
-        bottom:10,
+        bottom:5,
         backgroundColor:Colors.getLightColor('verticalLineColor')
     },
     currentLocationParentView: {

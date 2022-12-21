@@ -69,6 +69,14 @@ const styles = StyleSheet.create({
         paddingTop: '3%',
         margin: '2%'
     },
+    noHistoryText: {
+        color: Colors.getLightColor('primaryColor'),
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 20,
+        lineHeight: 13,
+        paddingTop: '3%',
+        margin: '2%'
+    },
     notificationIcon: {
         backgroundColor: Colors.getLightColor('whiteColor'),
         borderRadius: 25,
@@ -94,7 +102,8 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         borderRadius: 10,
         marginVertical: '2%',
-        flexDirection: 'row',
+        // justifyContent:'space-evenly'
+        // flexDirection: 'row',
     },
     imageStyling: {
         width: '16%',
@@ -106,18 +115,36 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     textualMainView: {
-        marginVertical: '3%',
-        marginLeft: '5%',
-        width: '50%',
+        // marginVertical: '3%',
+        marginHorizontal: '5%',
+        width: '90%',
+        // backgroundColor:'red',
+        flexDirection: 'row',
+
     },
     userNameText: {
         color: Colors.getLightColor('whiteColor'),
         fontWeight: '600',
         fontFamily: 'Montserrat-Medium',
         fontSize: 14,
+        top: 2
+    },
+    pickUpText: {
+        color: Colors.getLightColor('secondaryColor'),
+        fontWeight: '600',
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 14,
+        width: '100%',
+    },
+    dropText: {
+        color: Colors.getLightColor('secondaryColor'),
+        fontWeight: '600',
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 13,
+        width: '100%',
     },
     rideTypeText: {
-        marginTop: '3%',
+        // marginTop: '3%',
         fontSize: 10,
         color: Colors.getLightColor('whiteColor'),
         fontWeight: '600',
@@ -127,17 +154,27 @@ const styles = StyleSheet.create({
         color: Colors.getLightColor('whiteColor'),
         fontWeight: '600',
         fontFamily: 'Montserrat-Medium',
-        fontSize: 10
+        fontSize: 13,
+        // marginVertical:'3%'
     },
     datedView: {
-        marginTop: '4%',
-        marginLeft: '1%'
+        // marginTop: '4%',
+        marginRight: '4%'
     },
+    DateText: {
+        color: Colors.getLightColor('secondaryColor'),
+        fontWeight: '600',
+        fontFamily: 'Montserrat-Medium',
+        fontSize: 13,
+        alignSelf: 'flex-end'
+    },
+
     datedText: {
         color: Colors.getLightColor('whiteColor'),
         fontWeight: '400',
         fontFamily: 'Montserrat-Medium',
         fontSize: 12,
+        alignSelf: 'flex-end'
     },
     nothingShowView: {
         justifyContent: 'center',
@@ -150,7 +187,75 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         paddingLeft: 10,
         paddingRight: 10,
-        height: Dimensions.get('window').height * 0.71,
+        // height: Dimensions.get('window').height * 0.71,
+    },
+    netContainer: {
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        height: '100%',
+        width: '100%',
+        backgroundColor: Colors.getLightColor('primaryColor')
+    },
+    netParentView: {
+        backgroundColor: Colors.getLightColor('secondaryColor'),
+        alignItems: 'center',
+        alignSelf: 'center',
+        width: '100%',
+        justifyContent: 'space-evenly',
+        borderTopRightRadius: 5,
+        borderTopLeftRadius: 5,
+        paddingVertical: '10%'
+    },
+    netNoInternetText: {
+        color: Colors.getLightColor('primaryColor'),
+        fontSize: 25,
+        fontFamily: 'Montserrat-Medium',
+    },
+    netSecondMainView: {
+        backgroundColor: 'white',
+        alignSelf: 'center',
+        width: '100%',
+        paddingVertical: '5%',
+        alignContent: 'center',
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+        justifyContent: 'space-around',
+        alignItems: 'center'
+    },
+    netTurnOnWifiText: {
+        color: Colors.getLightColor('primaryColor'),
+        fontSize: 20,
+        fontFamily: 'Montserrat-Medium',
+        textAlign: 'center'
+    },
+    netOkOpacity: {
+        width: '80%',
+        backgroundColor: Colors.getLightColor('secondaryColor'),
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        // padding:'3%',
+        marginVertical: '5%'
+    },
+    netOkText: {
+        color: Colors.getLightColor('primaryColor'),
+        fontSize: 25,
+        fontFamily: 'Montserrat-Medium',
+    },
+    IconsView: {
+        width: '10%',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+
+    },
+    verticalLine: {
+        borderStyle: 'dashed',
+        borderWidth: 0.5,
+        borderRadius: 1,
+        width: 1,
+        borderColor: Colors.getLightColor('secondaryColor'),
+        height: Dimensions.get('window').height * 0.040,
+        bottom: 5,
     },
 });
 export default styles;

@@ -8,6 +8,7 @@ import CustomerBookingConfirmationReducer from './Reducers/CustomerBookingConfir
 import CustomerFeedbackReducer from './Reducers/CustomerFeedbacktoDriver/CustomerBookingConfirmationReducer'
 import CustomerForgotOTPReducer from './Reducers/CustomerForgotOTPRequest/CustomerForgotOTPReducer'
 import CustomerForgotPassReducer from './Reducers/CustomerForgotPass/ForgotPassReducer'
+import CustomerFutureRidesReducer from './Reducers/CustomerFutureRide/CustomerFutureRidesReducer'
 import CustomerLoginReducer from './Reducers/CustomerLogin/CustomerLoginReducer'
 import NotificationDataReducer from './Reducers/CustomerNotifications/NotificationData'
 import CustomerProfileReducer from './Reducers/CustomerProfileData/CustomerProfile'
@@ -81,6 +82,7 @@ const appReducers = combineReducers ({
     profileData: CustomerProfileReducer,
     CustProfileUpdate: CustomerProfileUpdateReducer,
     driverStatus: UpdateDriverActivityReducer,
+    customerScheduleRide: CustomerFutureRidesReducer,
 })
 
 const rootReducer = (state, action) => {

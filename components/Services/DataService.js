@@ -1,7 +1,7 @@
 //Responsible for Managing Network Calls
 
 // const axios = require('axios')
-import { ACCEPT_REJECT_RESPONSE, CONFIRMING_CUSTOMER_TRAVEL, CUSTOMER_CANCEL_RIDE, CUSTOMER_CANCEL_RIDE_RESAON, CUSTOMER_FEEDBACK_TO_DRIVER, CUSTOMER_FROM_AND_TO_FARES, CUSTOMER_LOGIN, CUSTOMER_NOTIFICATIONS, CUSTOMER_PROFILE, CUSTOMER_PROFILE_UPDATE, CUSTOMER_RESEND_SIGNUP_OTP, CUSTOMER_RESET_PASSWORD, CUSTOMER_SIGNUP, CUSTOMER_VERIFY_OTP, CUSTOMET_FORGOT_PASS, DIVER_ARRIVED_AT_RIDER, DRIVERDATA_API, DRIVER_ACTIVE_STATUS, DRIVER_COMPLETED_RIDE, FORGOTPASSMAIL, ForgotPassMail, FORGOTPASSOTP, GETTING_DRIVER_LIVE_LOCATION, GET_DRIVER_PROFILE, GET_TRANSACTION_DETAILS, GET_TRANSACTION_HISTORY, GET_TRAVEL_HISTORY_API, GET_TRAVEL_HISTORY_DETAILS, LOGIN_API, PICK_DROP_DETAILS_API, RESEND_OTP_API, RESETPASSAPI, SERVICETYPES_API, UPDATE_DRIVER_PROFILE, UPDATING_DRIVER_LIVE_LOCATION, VEHICLEINFO_API } from '../Common/Constants';
+import { ACCEPT_REJECT_RESPONSE, CONFIRMING_CUSTOMER_TRAVEL, CUSTOMER_CANCEL_RIDE, CUSTOMER_CANCEL_RIDE_RESAON, CUSTOMER_FEEDBACK_TO_DRIVER, CUSTOMER_FROM_AND_TO_FARES, CUSTOMER_FUTURE_JOBS, CUSTOMER_LOGIN, CUSTOMER_NOTIFICATIONS, CUSTOMER_PROFILE, CUSTOMER_PROFILE_UPDATE, CUSTOMER_RESEND_SIGNUP_OTP, CUSTOMER_RESET_PASSWORD, CUSTOMER_SIGNUP, CUSTOMER_VERIFY_OTP, CUSTOMET_FORGOT_PASS, DIVER_ARRIVED_AT_RIDER, DRIVERDATA_API, DRIVER_ACTIVE_STATUS, DRIVER_COMPLETED_RIDE, FORGOTPASSMAIL, ForgotPassMail, FORGOTPASSOTP, GETTING_DRIVER_LIVE_LOCATION, GET_DRIVER_PROFILE, GET_TRANSACTION_DETAILS, GET_TRANSACTION_HISTORY, GET_TRAVEL_HISTORY_API, GET_TRAVEL_HISTORY_DETAILS, LOGIN_API, PICK_DROP_DETAILS_API, RESEND_OTP_API, RESETPASSAPI, SERVICETYPES_API, UPDATE_DRIVER_PROFILE, UPDATING_DRIVER_LIVE_LOCATION, VEHICLEINFO_API } from '../Common/Constants';
 import axios from 'axios';
 class DataService {
 
@@ -82,7 +82,7 @@ class DataService {
         payload.interior_pic_path.forEach(file => {
             formData.append("interior_pic[]", file.path);
         });
-        
+
         payload.exterior_pic_path.forEach(file => {
             formData.append("exterior_pic[]", file.path);
         });
@@ -614,23 +614,46 @@ class DataService {
 
     //Confirm Customer Travel Booking
     ConfirmingCustomerBooking(payload, successCallBack, errorCallBack) {
-        axios.post(CONFIRMING_CUSTOMER_TRAVEL,
-            {
-                addressFrom: payload.addressFrom,
-                addressTo: payload.addressTo,
-                customer_id: payload.customer_id,
-                service_id: payload.service_id,
+        console.log(payload)
+        if (payload.feature_date === null) {
+            axios.post(CONFIRMING_CUSTOMER_TRAVEL,
+                {
+                    addressFrom: payload.addressFrom,
+                    addressTo: payload.addressTo,
+                    customer_id: payload.customer_id,
+                    service_id: payload.service_id,
 
-            }).then(function (response) {
-                console.log(response.data)
-                if (response.data.success) {
-                    successCallBack(response.data)
-                } else {
-                    errorCallBack(response.data.message)
-                }
-            }).catch(function (error) {
-                errorCallBack("Network Error")
-            })
+                }).then(function (response) {
+                    console.log('response is', response.data)
+                    if (response.data.success) {
+                        successCallBack(response.data)
+                    } else {
+                        errorCallBack(response.data.message)
+                    }
+                }).catch(function (error) {
+                    errorCallBack("Network Error")
+                })
+        } else {
+            axios.post(CONFIRMING_CUSTOMER_TRAVEL,
+                {
+                    addressFrom: payload.addressFrom,
+                    addressTo: payload.addressTo,
+                    customer_id: payload.customer_id,
+                    service_id: payload.service_id,
+                    feature_date: payload.feature_date
+
+                }).then(function (response) {
+                    console.log('response is', response.data)
+                    if (response.data.success) {
+                        successCallBack(response.data)
+                    } else {
+                        errorCallBack(response.data.message)
+                    }
+                }).catch(function (error) {
+                    errorCallBack("Network Error")
+                })
+        }
+
     }
 
     //Getting Rider Live Location
@@ -751,7 +774,22 @@ class DataService {
             })
     }
 
+    //Customer Future Jobs
+    GettingCustomerScheduling(payload, successCallBack, errorCallBack) {
+        axios.post(CUSTOMER_FUTURE_JOBS,
+            {
+                customer_id: payload.customer_id,
 
+            }).then(function (response) {
+                if (response.data.success) {
+                    successCallBack(response.data)
+                } else {
+                    errorCallBack(response.data.message)
+                }
+            }).catch(function (error) {
+                errorCallBack(error)
+            })
+    }
 }
 
 export default DataService;

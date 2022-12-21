@@ -241,7 +241,7 @@ function DrawerCustomerData() {
         }
       }} />
 
-      <Drawer.Screen name="UpComing Trips" component={CustomerUpComingTrips} options={{
+      <Drawer.Screen name="Scheduled Rides" component={CustomerUpComingTrips} options={{
         drawerIcon: ({ focused, size }) => (
           <MaterialCommunityIcons
             name="chevron-triple-right"

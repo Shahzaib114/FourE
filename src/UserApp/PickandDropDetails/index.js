@@ -52,34 +52,17 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 
 const PickDropDetails = ({ route }) => {
     const navigation = useNavigation()
-    const MarkerAnimations = [
-        {
-            id: '1', name: 'Karachi', latitude: 33.734862, longitude: 73.090654
-        },
-        {
-            id: '2', name: 'Lahore', latitude: 33.735130, longitude: 73.091653
-        },
-        {
-            id: '3', name: 'Islamabad', latitude: 33.733470, longitude: 73.087562
-        },
-        {
-            id: '4', name: 'G6', latitude: 33.732721, longitude: 73.086179
-        },
-        {
-            id: '5', name: 'G7', latitude: 33.734050, longitude: 73.088337
-        },
-        {
-            id: '6', name: 'Rahim yar Khan', latitude: 33.732524, longitude: 73.090323
-        },
-
-
-    ]
+  
 
     const [goToNext, setGoToNext] = useState(false);
+    const [rideSelected, setrideSelected] = useState(false)
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('blur', () => {
             onResetCurrentRide()
             setGoToNext(false)
+            setScheduleRideDone(false)
+            setrideSelected(false)
         })
         return unsubscribe;
     }, [navigation]);
@@ -98,13 +81,26 @@ const PickDropDetails = ({ route }) => {
                 } else {
                     ClientLayer.getInstance().getDataManager().GetValueForKey('customer_id', result => {
                         let customerId = JSON.parse(result)
-                        confirmationBookingDispatch(ConfirmingCustomerBooking({
-                            addressFrom: currentLocationLabel,
-                            addressTo: destinationLabel,
-                            service_id: JSON.parse(selectedId),
-                            customer_id: JSON.parse(customerId),
-                            comments: 'This is confirmation of Booking from Customer',
-                        }))
+                        if (dateAdded != '') {
+                            setScheduleRideDone(true)
+                            confirmationBookingDispatch(ConfirmingCustomerBooking({
+                                addressFrom: currentLocationLabel,
+                                addressTo: destinationLabel,
+                                service_id: JSON.parse(selectedId),
+                                customer_id: JSON.parse(customerId),
+                                comments: 'This is confirmation of Booking from Customer',
+                                feature_date: apiDate
+                            }))
+                        } else {
+                            confirmationBookingDispatch(ConfirmingCustomerBooking({
+                                addressFrom: currentLocationLabel,
+                                addressTo: destinationLabel,
+                                service_id: JSON.parse(selectedId),
+                                customer_id: JSON.parse(customerId),
+                                comments: 'This is confirmation of Booking from Customer',
+                                feature_date: null
+                            }))
+                        }
                     })
                 }
             })
@@ -116,34 +112,47 @@ const PickDropDetails = ({ route }) => {
     const [open, setOpen] = useState(false)
     const [dateAdded, setDateAdded] = useState('')
     const [minimumDate, setMinimumDate] = useState()
+    const [apiDate, setApiDate] = useState()
 
     const confirmationLoading = useSelector((state) => state.confirmBooking.runLoader)
     const confirmationData = useSelector((state) => state.confirmBooking.data)
     const confirmationError = useSelector((state) => state.confirmBooking.error)
     const [confirmationLoader, setConfirmationLoader] = useState(false);
     const confirmationBookingDispatch = useDispatch();
+    const [scheduleRideDone, setScheduleRideDone] = useState(false)
     useEffect(() => {
         setConfirmationLoader(confirmationLoading)
+        console.log(confirmationData)
         if (!confirmationLoading && confirmationData != null) {
-            if (confirmationData.success) {
-                if (confirmationData.message == "Driver not available") {
-                    alert(confirmationData.message)
+            if (confirmationData.message === 'Feature job created') {
+                if (scheduleRideDone === true) {
+                    alert('Scheduled Ride has been created, you can check it in Upcoming Trips!')
+                    navigation.navigate('CustomerHomePage')
+                } else {
+                    console.log('its false')
                 }
-                else if (goToNext == true) {
-                    ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify('OTW'))
-                    ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(confirmationData.data))
-                    ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(currentLocationLabel))
-                    ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(destinationLabel))
-                    ClientLayer.getInstance().getDataManager().SaveValueForKey('currentRidePrice', JSON.stringify(rideFare))
-                    navigation.replace('CurrentRideDetails',
-                        {
-                            paramData: confirmationData.data,
-                            paramFrom: currentLocationLabel,
-                            paramTo: destinationLabel
-                        })
-                    ClientLayer.getInstance().getDataManager().SaveValueForKey('driver_id_RideDetails', confirmationData.data.find_driver.driver_id)
+            } else {
+                if (confirmationData.success) {
+                    if (confirmationData.message == "Driver not available") {
+                        alert(confirmationData.message)
+                    }
+                    else if (goToNext == true) {
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify('OTW'))
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(confirmationData.data))
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(currentLocationLabel))
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(destinationLabel))
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('currentRidePrice', JSON.stringify(rideFare))
+                        navigation.replace('CurrentRideDetails',
+                            {
+                                paramData: confirmationData.data,
+                                paramFrom: currentLocationLabel,
+                                paramTo: destinationLabel
+                            })
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('driver_id_RideDetails', confirmationData.data.find_driver.driver_id)
+                    }
                 }
             }
+
         }
         else if (!confirmationLoading && confirmationError != null) {
             alert('Credentials are Wrong')
@@ -158,6 +167,7 @@ const PickDropDetails = ({ route }) => {
                 <Item
                     item={item}
                     onPress={() => {
+
                         _checkInternetBrforeRidePick(item)
                     }}
                     backgroundColor={{ backgroundColor }}
@@ -194,6 +204,7 @@ const PickDropDetails = ({ route }) => {
     useEffect(() => {
         setFareLoader(fareLoading)
         if (!fareLoading && fareData != null) {
+            
             setPickandDropFare(fareData.data)
             console.log('fare is', fareData.data.fare)
             setRideFare(fareData.data.fare)
@@ -208,6 +219,7 @@ const PickDropDetails = ({ route }) => {
             alert('please Add Destination Location !')
         }
         else {
+            setrideSelected(true)
             fareDispatch(gettingPickandDropFares({
                 addressFrom: currentLocationLabel,
                 addressTo: destinationLabel,
@@ -269,8 +281,6 @@ const PickDropDetails = ({ route }) => {
     const markerRef = useRef();
 
     useEffect(() => {
-        setMinimumDate(moment().calendar())
-        console.log('LLL is', moment().calendar())
         getPermissions()
         dispatch(getCustomerServiceTypes())
     }, []);
@@ -396,7 +406,6 @@ const PickDropDetails = ({ route }) => {
     const [distanceKM, setDistanceKM] = useState();
 
     return (
-
         <View style={styles.container}>
             <Modal
                 animationType='slide'
@@ -771,15 +780,17 @@ const PickDropDetails = ({ route }) => {
                                 open={open}
                                 minimumDate={new Date(Date.now())}
                                 date={date}
-                                cancelText='Cancel'
                                 textColor={Colors.getLightColor('primaryColor')}
                                 androidVariant='iosClone'
                                 dividerHeight={5}
                                 onDateChange={(date) => {
-                                    // console.log('changed is', date)
                                     setDateAdded(moment(date).format('LLL'))
                                     setDate(date)
-                                    console.log('changed is', moment(date).format('LLL'))
+                                    let dateset = moment(date).format()
+                                    let myDate = dateset.replace('T', ' ')
+                                    let properDateis = myDate.slice(0, 19)
+                                    console.log('changed is', properDateis)
+                                    setApiDate(properDateis)
                                 }}
                                 is24hourSource={'device'}
                                 fadeToColor={Colors.getLightColor('verticalLineColor')}
@@ -817,9 +828,6 @@ const PickDropDetails = ({ route }) => {
                                     } else {
                                         setOpen(false)
                                     }
-
-                                    // console.log('current date is',Date.now())
-
                                 }}
                                     style={{
                                         backgroundColor: Colors.getLightColor('primaryColor'), width: '45%', padding: '3%', alignItems: 'center',
@@ -938,12 +946,33 @@ const PickDropDetails = ({ route }) => {
                         :
                         (
                             <View style={styles.fareMainView}>
-                                <Text style={styles.fareText}>
+                                {rideSelected === false ?
+                                    (
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <Text style={styles.fareText}>
+                                                Fare :  Pkr {'('} ~  {')'}
+                                            </Text>
+                                            <Text style={styles.distanceText}>
+                                                KM
+                                            </Text>
+                                        </View>
+                                    )
+                                    :
+                                    (
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <Text style={styles.fareText}>
+                                                Fare : {pickandDropFare.fare} Pkr {'('} ~ {pickandDropFare.duration} {')'}
+                                            </Text>
+                                            <Text style={styles.distanceText}>
+                                                {pickandDropFare.distance}KM
+                                            </Text>
+                                        </View>
+                                    )
+                                }
+                                {/* <Text style={styles.fareText}>
                                     Fare : {pickandDropFare.fare} Pkr {'('} ~ {pickandDropFare.duration} {')'}
-                                </Text>
-                                <Text style={styles.distanceText}>
-                                    {pickandDropFare.distance}KM
-                                </Text>
+                                </Text> */}
+
                             </View>
                         )
                     }

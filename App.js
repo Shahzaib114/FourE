@@ -71,6 +71,8 @@ import DriverWalletScreen from './src/Wallet';
 import CustomerWalletScreen from './src/UserApp/CustomerWallet';
 import NetInfo from "@react-native-community/netinfo";
 import NetworkCheck from './src/NetworkError';
+import CustomerEditRide from './src/UserApp/CustomerEditRide';
+import BackgroundJob from 'react-native-background-actions';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -266,14 +268,20 @@ function DrawerCustomerData() {
         }
       }} /> */}
     </Drawer.Navigator>
-
   )
 };
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background APP.js!', remoteMessage)
   if (remoteMessage.data.type == 'rideCompleted') {
-    ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('RiderOTW', JSON.stringify(null))
+    // ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
     console.log('completed saved')
     PushNotification.cancelAllLocalNotifications()
   } else if (remoteMessage.data.type == 'rideComing') {
@@ -294,11 +302,17 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
     ClientLayer.getInstance().getDataManager().SaveValueForKey('type', JSON.stringify(null))
     ClientLayer.getInstance().getDataManager().SaveValueForKey('notificationJobId', JSON.stringify(null))
     ClientLayer.getInstance().getDataManager().SaveValueForKey('alreadyStarted', JSON.stringify(null))
+  } else {
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('type', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('notificationJobId', JSON.stringify(null))
+    console.log('null')
   }
 });
 
 function App({ navigation }) {
-
+  const removingBackgroundAction = async () => {
+    await BackgroundJob.stop()
+}
   useEffect(() => {
     messaging().getInitialNotification().then(remoteMessage => {
       if (remoteMessage) {
@@ -309,7 +323,15 @@ function App({ navigation }) {
           ClientLayer.getInstance().getDataManager().SaveValueForKey('notificationJobId', JSON.stringify(remoteMessage.data.jobID))
           console.log('newRide saved')
         } else if (remoteMessage.data.type == 'rideCompleted') {
-          ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
+          // ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
+          ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+          ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
+          ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
+          ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
+          ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(null))
+          ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify(null))
+          ClientLayer.getInstance().getDataManager().SaveValueForKey('RiderOTW', JSON.stringify(null))
+          removingBackgroundAction()
           console.log('completed saved')
           PushNotification.cancelAllLocalNotifications()
         } else if (remoteMessage.data.type == 'rideStarted') {
@@ -340,7 +362,7 @@ function App({ navigation }) {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={'UserAppSplash'}
+        <Stack.Navigator initialRouteName={'SignupStart'}
           screenOptions={{
             headerShown: false
           }}>
@@ -385,6 +407,7 @@ function App({ navigation }) {
           <Stack.Screen name="CustomerHeader" component={CustomerHeader} />
           <Stack.Screen name="CustomerTransactionHistory" component={CustomerTransactionHistory} />
           <Stack.Screen name="CustomerTransactionDetails" component={CustomerTransactionDetails} />
+          <Stack.Screen name="CustomerEditRide" component={CustomerEditRide} />
 
         </Stack.Navigator>
       </NavigationContainer>

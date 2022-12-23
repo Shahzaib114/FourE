@@ -8,7 +8,9 @@ import {
     ScrollView,
     ActivityIndicator,
     Alert,
-    Modal
+    Modal,
+    PermissionsAndroid,
+    Linking
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -52,7 +54,35 @@ const CustomerLogin = ({ navigation, route, props }) => {
             }
         );
     }
+    const getPermissionsnotification = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION,
+                // {
+                //     title: "FourE Permission",
+                //     message:
+                //         "FourE App needs access to your notifications " +
+                //         "so you can recieve notifications.",
+                //     buttonNeutral: "Ask Me Later",
+                //     buttonNegative: "Cancel",
+                //     buttonPositive: "OK"
+                // }
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("You can use the notifications");
+                setNotificationPermission(false)
+            } else {
+                console.log("notifications permission denied")
+                setNotificationPermission(true)
+            }
+        } catch (err) {
+            console.warn(err);
+        }
 
+    };
+    useEffect(() => {
+        getPermissionsnotification()
+    }, [])
     useEffect(() => {
         setIsLoading(authLoading)
         if (!authLoading && data != null) {
@@ -165,9 +195,40 @@ const CustomerLogin = ({ navigation, route, props }) => {
 
         }
     }
+    const [notificationPermission, setNotificationPermission] = useState(null)
 
     return (
         <View style={styles.container}>
+            <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={notificationPermission}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Allow Notification Permissions from setting to get notified everytime !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => {
+                                    setNotificationPermission(false)
+                                    Linking.openSettings()
+                                }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <Modal
                 animationIn={'fadeIn'}
                 animationInTiming={800}
@@ -345,7 +406,7 @@ const CustomerLogin = ({ navigation, route, props }) => {
                         )
                     }
                 </View>
-                
+
                 <View style={styles.imageViewBottom}>
                     <Image source={require('../../../assets/Images/carImage.png')}
                         style={styles.bottomImageStyle}>

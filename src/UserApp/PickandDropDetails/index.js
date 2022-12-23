@@ -1,4 +1,4 @@
-import { Dimensions, View, Text, ScrollView, Image, FlatList, TouchableOpacity, ActivityIndicator, Modal, PermissionsAndroid, ToastAndroid } from 'react-native'
+import { Dimensions, View, Text, ScrollView, Image, FlatList, TouchableOpacity, ActivityIndicator, Modal, PermissionsAndroid, ToastAndroid, Linking } from 'react-native'
 import React, { useState, useEffect, useRef, } from 'react';
 import styles from './style';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -24,6 +24,7 @@ import CustomerHeader from '../CustomerHeader';
 import NetInfo from "@react-native-community/netinfo";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import BackgroundJob from 'react-native-background-actions';
 
 import DatePicker from 'react-native-date-picker'
 import moment from "moment";
@@ -52,8 +53,6 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 
 const PickDropDetails = ({ route }) => {
     const navigation = useNavigation()
-  
-
     const [goToNext, setGoToNext] = useState(false);
     const [rideSelected, setrideSelected] = useState(false)
 
@@ -120,6 +119,51 @@ const PickDropDetails = ({ route }) => {
     const [confirmationLoader, setConfirmationLoader] = useState(false);
     const confirmationBookingDispatch = useDispatch();
     const [scheduleRideDone, setScheduleRideDone] = useState(false)
+    const sleep = (time) => new Promise((resolve) => setTimeout(() => resolve(), time));
+    BackgroundJob.on('expiration', () => {
+        console.log('IOS: i am being closed')
+    })
+    const taskRandom = async (taskData) => {
+        await new Promise(async resolve => {
+            const { delay } = taskData;
+            for (let i = 0; BackgroundJob.isRunning(); i++) {
+                console.log('getting locations', 'Runned -> ' + i)
+                await BackgroundJob.updateNotification(
+                    {
+                        taskDesc: 'Your Location will be shared to your concerned Rider!',
+                        progressBar: 2,
+                    });
+                await sleep(delay);
+            }
+        });
+    }
+    const locationCalling = async () => {
+            try {
+                await BackgroundJob.start(taskRandom, options)
+                console.log('Started Background Action')
+            } catch (e) {
+                console.log('error is', e)
+            }        
+    }
+    const options = {
+        taskName: 'Example',
+        taskTitle: 'Location On',
+        taskDesc: 'ExampleTask description',
+        taskIcon: {
+            name: 'ic_launcher',
+            type: 'mipmap',
+        },
+        color: '#ff00ff',
+        linkingURI: 'yourSchemeHere://chat/jane', // See Deep Linking for more info
+        parameters: {
+            delay: 2000,
+        },
+    };
+
+    const handleOpenUrl = (evt) => {
+        console.log('clicked')
+    }
+    Linking.addEventListener('url', handleOpenUrl)
     useEffect(() => {
         setConfirmationLoader(confirmationLoading)
         console.log(confirmationData)
@@ -142,13 +186,15 @@ const PickDropDetails = ({ route }) => {
                         ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(currentLocationLabel))
                         ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(destinationLabel))
                         ClientLayer.getInstance().getDataManager().SaveValueForKey('currentRidePrice', JSON.stringify(rideFare))
+                        ClientLayer.getInstance().getDataManager().SaveValueForKey('driver_id_RideDetails', confirmationData.data.find_driver.driver_id)
+                        locationCalling()
                         navigation.replace('CurrentRideDetails',
                             {
                                 paramData: confirmationData.data,
                                 paramFrom: currentLocationLabel,
                                 paramTo: destinationLabel
                             })
-                        ClientLayer.getInstance().getDataManager().SaveValueForKey('driver_id_RideDetails', confirmationData.data.find_driver.driver_id)
+                        
                     }
                 }
             }
@@ -167,7 +213,6 @@ const PickDropDetails = ({ route }) => {
                 <Item
                     item={item}
                     onPress={() => {
-
                         _checkInternetBrforeRidePick(item)
                     }}
                     backgroundColor={{ backgroundColor }}
@@ -204,7 +249,6 @@ const PickDropDetails = ({ route }) => {
     useEffect(() => {
         setFareLoader(fareLoading)
         if (!fareLoading && fareData != null) {
-            
             setPickandDropFare(fareData.data)
             console.log('fare is', fareData.data.fare)
             setRideFare(fareData.data.fare)
@@ -778,7 +822,7 @@ const PickDropDetails = ({ route }) => {
                                     height: Dimensions.get('window').height * 0.2,
                                 }}
                                 open={open}
-                                minimumDate={new Date(Date.now())}
+                                minimumDate={new Date(Date.now() + (3660 * 1000 * 1))}
                                 date={date}
                                 textColor={Colors.getLightColor('primaryColor')}
                                 androidVariant='iosClone'
@@ -813,16 +857,13 @@ const PickDropDetails = ({ route }) => {
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => {
-                                    const now = moment()
-                                    console.log('current date is', moment().format("MMM Do YY"))
-                                    console.log('selected date is', moment(date).format("MMM Do YY"))
+                                    let setDate = new Date(Date.now() + (3660 * 1000 * 1))
+                                    console.log('Set time is', moment(setDate).format('LT'))
+                                    console.log('selected tme is', moment(date).format('LT'))
                                     if (moment(date).format("MMM Do YY") === moment().format("MMM Do YY")) {
-                                        if (moment(date).format('LT') < moment().format('LT')) {
-                                            console.log('less', dateAdded)
-                                            alert('Please Select Date Again!')
-                                        } else if (moment(date).format('LT') == moment().format('LT')) {
-                                            alert('Your Scheduled Time is too soon, Please Select Date Again!')
-                                        } else if (moment(date).format('LT') > moment().format('LT')) {
+                                        if (moment(date).format('LT') < moment(setDate).format('LT')) {
+                                            alert('Minimum Schedule should be more than 1 hour from now!')
+                                        } else {
                                             setOpen(false)
                                         }
                                     } else {

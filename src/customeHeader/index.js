@@ -376,7 +376,8 @@ const CustomeHeader = (props) => {
                 console.log('unsubscibed', interest);
             }
         );
-    };
+    }
+
     const getPermissions = async () => {
         try {
             const granted = await PermissionsAndroid.request(
@@ -392,7 +393,8 @@ const CustomeHeader = (props) => {
         } catch (err) {
             console.log(err);
         }
-    };
+    }
+    
     const [getLocation, setGetLocation] = useState(false)
     const getBackgroundDone = async () => {
         try {

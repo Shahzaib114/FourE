@@ -498,7 +498,7 @@ const IncomingRides = ({ route }) => {
                                                                 }}
                                                                     style={styles.acceptOpacity}>
                                                                     <Text style={styles.acceptRejectText}>
-                                                                        Accept
+                                                                        Go
                                                                     </Text>
                                                                 </TouchableOpacity>
                                                             </View>

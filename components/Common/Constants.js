@@ -41,5 +41,6 @@ module.exports = {
     CUSTOMER_FEEDBACK_TO_DRIVER : BASE_URL + 'customerFeedBack',
     CUSTOMER_PROFILE : BASE_URL + 'customer-show-profile',
     CUSTOMER_PROFILE_UPDATE :  BASE_URL+ 'customer-update-profile',
-    CUSTOMER_FUTURE_JOBS : BASE_URL + 'feature-jobs'
+    CUSTOMER_FUTURE_JOBS : BASE_URL + 'feature-jobs',
+    CUSTOMER_FUTURE_JOBS_DETAILS : BASE_URL + 'edit-feature-job'
 };

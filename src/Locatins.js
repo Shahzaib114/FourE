@@ -1,102 +1,154 @@
 import { useNavigation } from "@react-navigation/native";
-import { style } from "deprecated-react-native-prop-types/DeprecatedImagePropType";
 import React, { useRef, useState, useEffect } from "react";
-import {
-    AppState, StyleSheet, Text, View,
-    NativeModules,
-    Modal,
-    TouchableOpacity,
-    Linking,
-    PermissionsAndroid, Image, Dimensions
-} from "react-native";
-import Geolocation from 'react-native-geolocation-service';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Colors from "../utility/colors/Colors";
-import NetworkCheck from "./NetworkError";
+import { FlatList, Linking, PermissionsAndroid, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { PERMISSIONS } from "react-native-permissions";
+import PushNotification from "react-native-push-notification";
 
-
-const Locations = ({route}) => {
-    const navigation = useNavigation()
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('blur', () => {
-            console.log('Refreshed in history!');
-            setVisibility(false)
-        })
-        return unsubscribe;
-    }, [navigation]);
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            console.log('Refreshed in history!', visibility);
-        })
-        return unsubscribe;
-    }, [navigation]);
-    // useEffect(() => {
-    //     Geolocation.getCurrentPosition(info => console.log('location are', info));
-    // }, [])
-
+const Locations = ({ route }) => {
+    const Item = ({ item, onPress, backgroundColor, textColor }) => (
+        <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
+            <Text style={[styles.title, textColor]}>{item.title}</Text>
+        </TouchableOpacity>
+    );
+    const [selectedId, setSelectedId] = useState(null);
     const [visibility, setVisibility] = useState(false);
+    const renderItem = ({ item }) => {
+        const backgroundColor = item.id === '2' ? "#6e3b6e" : "#f9c2ff";
+        const color = item.id === '2' ? 'white' : 'black';
+        return (
+            <Item
+                item={item}
+                onPress={() => {
+                    setSelectedId(item.id)
+                    console.log(item.id)
+                    setVisibility(true)
+                }}
+                backgroundColor={{ backgroundColor }}
+                textColor={{ color }}
+            />
+        );
+    };
+
+    const _renderItemAfter = ({ item }) => {
+        const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
+        const color = item.id === selectedId ? 'white' : 'black';
+        return (
+            <Item
+                item={item}
+                onPress={() => {
+                    setSelectedId(item.id)
+                    console.log(item.id)
+                }}
+                backgroundColor={{ backgroundColor }}
+                textColor={{ color }}
+            />
+        );
+    };
+
+    const navigation = useNavigation()
+    const DATA = [
+        {
+            id: "1",
+            title: "First Item",
+        },
+        {
+            id: "2",
+            title: "Second Item",
+        },
+        {
+            id: "3",
+            title: "Third Item",
+        },
+    ];
+    useEffect(()=> {
+        getPermissions()
+        // PushNotification.checkPermissions(function(permissions) {  console.log(permissions)});
+    },[])
+    // const getPermissions = async () => {
+    //     // if (Platform.OS === 'ios') {
+    //     //     const status = await Permissions.check()
+    //     //     if (status === PermissionsStatus.AUTHORIZED) {
+    //     //       return true
+    //     //     } else {
+    //     //       return false
+    //     //     }
+    //     //   } else {
+    //     //     // This is where I am using the library
+    //     //     const status = await NotificationManager.areNotificationsEnabled()
+    //     //     return status
+    //     //   }
+    //     // }
+    //     // const grant = await PERMISSIONS.ANDROID.POST_NOTIFICATIONS
+    //     try {
+    //         const granted = await PermissionsAndroid.request(
+    //             PermissionsAndroid.PERMISSIONS.NOTIFICATION,
+    //         );
+    //         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    //             console.log("You can use the notification");
+    //             // getBackgroundDone()
+    //         } else {
+    //             console.log("notification permission denied");
+    //         }
+    //     } catch (err) {
+    //         console.warn(err);
+    //     }
+
+    // };
+    const getPermissions = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION,
+              {
+                title: "FourE Permission",
+                message:
+                  "FourE App needs access to your notifications " +
+                  "so you can recieve notifications.",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "OK"
+              }
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+              console.log("You can use the notifications");
+            } else {
+              console.log("notifications permission denied")
+              alert('Please Allow notification permission from setting')
+              Linking.openSettings()
+            }
+          } catch (err) {
+            console.warn(err);
+          }
+
+    };
+    // POST_NOTIFICATION
 
     return (
         <View>
-            {visibility && (
-            <NetworkCheck modalVisible={true}></NetworkCheck>
-            )}
-            {/* <Modal
-                animationIn={'fadeIn'}
-                animationInTiming={800}
-                visible={modalVisible}
-            >
-                <View style={{ justifyContent: 'center', backgroundColor: 'black', height: '100%', width: '100%' }}>
-
-                    <View style={{
-                        backgroundColor: Colors.getLightColor('secondaryColor'), height: '25%', alignItems: 'center', alignSelf: 'center',
-                        width: '90%', justifyContent: 'space-evenly', borderTopRightRadius: 5, borderTopLeftRadius: 5
-                    }}>
-                        <AntDesign name="disconnect" size={80} color={Colors.getLightColor('primaryColor')}>
-                        </AntDesign>
-                        <Text style={{
-                            color: Colors.getLightColor('primaryColor'),
-                            fontSize: 25,
-                            fontFamily: 'Montserrat-Medium',
-                        }}>
-                            No Internet
-                        </Text>
-                    </View>
-                    <View style={{
-                        backgroundColor: 'white', height: '20%', alignSelf: 'center', width: '90%',
-                        alignContent: 'center', borderBottomLeftRadius: 5, borderBottomRightRadius: 5, justifyContent: 'space-around', alignItems: 'center'
-                    }}>
-                        <Text style={{
-                            color: Colors.getLightColor('primaryColor'),
-                            fontSize: 20,
-                            fontFamily: 'Montserrat-Medium',
-                            textAlign: 'center'
-                        }}>
-                            Please Turn On Your Wifi or Check Your Mobile Data !
-                        </Text>
-                        <TouchableOpacity style={{
-                            width: '80%', backgroundColor: Colors.getLightColor('secondaryColor'), borderRadius: 25,
-                            justifyContent: 'center', alignItems: 'center'
-                        }}
-                            onPress={() => setModalVisible(false)}>
-                            <Text style={{
-                                color: Colors.getLightColor('primaryColor'),
-                                fontSize: 25,
-                                fontFamily: 'Montserrat-Medium',
-                            }}>
-                                Ok
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal> */}
-            
-            <TouchableOpacity onPress={() => setVisibility(true)}>
-                <Text style={{ color: 'black' }}>
-                    cjkec
-                </Text>
-            </TouchableOpacity>
+            <Text>
+                cjkdskc 
+            </Text>
+            {/* <FlatList
+                data={DATA}
+                renderItem={visibility === true ? _renderItemAfter : renderItem}
+                keyExtractor={(item) => item.id}
+                extraData={selectedId}
+            /> */}
         </View>
     )
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        marginTop: StatusBar.currentHeight || 0,
+    },
+    item: {
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
+    },
+});
+
 export default Locations

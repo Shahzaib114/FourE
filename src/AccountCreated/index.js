@@ -19,6 +19,7 @@ import { onResetCurrentRide } from '../../store/Actions/CustomerBookingConfirmat
 import { onResetServiceTypes } from '../../store/Actions/getCustomerServiceTypes/ServiceTypes';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
+import BackgroundJob from 'react-native-background-actions';
 
 const AccountCreated = ({ route }) => {
     const navigation = useNavigation()

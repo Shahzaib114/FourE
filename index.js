@@ -18,7 +18,15 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
     ClientLayer.getInstance().getDataManager().SaveValueForKey('notificationJobId', JSON.stringify(remoteMessage.data.jobID))
     console.log('saved')
   } else if (remoteMessage.data.type == 'rideCompleted') {
-    ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('RiderOTW', JSON.stringify(null))
+
+    // ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
     console.log('completed saved')
     PushNotification.cancelAllLocalNotifications()
   } else if (remoteMessage.data.type == 'rideStarted') {
@@ -51,7 +59,15 @@ messaging().getInitialNotification().then(remoteMessage => {
       ClientLayer.getInstance().getDataManager().SaveValueForKey('notificationJobId', JSON.stringify(remoteMessage.data.jobID))
       console.log('saved')
     } else if (remoteMessage.data.type == 'rideCompleted') {
-      ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
+      // ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
+      ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+      ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
+      ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
+      ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
+      ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(null))
+      ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify(null))
+      ClientLayer.getInstance().getDataManager().SaveValueForKey('RiderOTW', JSON.stringify(null))
+
       console.log('completed saved')
       PushNotification.cancelAllLocalNotifications()
     } else if (remoteMessage.data.type == 'rideStarted') {
@@ -68,8 +84,7 @@ messaging().getInitialNotification().then(remoteMessage => {
       ClientLayer.getInstance().getDataManager().SaveValueForKey('type', JSON.stringify(null))
       ClientLayer.getInstance().getDataManager().SaveValueForKey('notificationJobId', JSON.stringify(null))
       ClientLayer.getInstance().getDataManager().SaveValueForKey('alreadyStarted', JSON.stringify(null))
-    }
-    else {
+    } else {
       ClientLayer.getInstance().getDataManager().SaveValueForKey('type', JSON.stringify(null))
       ClientLayer.getInstance().getDataManager().SaveValueForKey('notificationJobId', JSON.stringify(null))
       console.log('null')

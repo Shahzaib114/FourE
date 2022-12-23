@@ -9,6 +9,7 @@ import {
     ActivityIndicator,
     PermissionsAndroid,
     Alert,
+    Linking,
 } from 'react-native';
 import Modal from "react-native-modal";
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -62,7 +63,35 @@ const LogIn = ({ navigation, route }) => {
                 setUserPass(JSON.parse(result))
             }
         });
+        // alert('Please Allow notification permission from setting')
+        getPermissionsnotification()
     }, []);
+    const getPermissionsnotification = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION,
+                // {
+                //     title: "FourE Permission",
+                //     message:
+                //         "FourE App needs access to your notifications " +
+                //         "so you can recieve notifications.",
+                //     buttonNeutral: "Ask Me Later",
+                //     buttonNegative: "Cancel",
+                //     buttonPositive: "OK"
+                // }
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("You can use the notifications");
+                setNotificationPermission(false)
+            } else {
+                console.log("notifications permission denied")
+                setNotificationPermission(true)
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+
+    };
     const getPermissions = async () => {
         try {
             const granted = await PermissionsAndroid.request(
@@ -77,31 +106,8 @@ const LogIn = ({ navigation, route }) => {
         } catch (err) {
             console.warn(err);
         }
-
-    };
-    // const getBackgroundDone = async () => {
-    //     try {
-    //         const granted = await PermissionsAndroid.request(
-    //             PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
-    //             {
-    //                 title: "FourE App wants to Access Your Location",
-    //                 message:
-    //                     "Please enable location to ALLOW ALL THE TIME " +
-    //                     "so you can take awesome pictures.",
-    //                 // buttonNeutral: "Ask Me Later",
-    //                 // buttonNegative: "Cancel",
-    //                 buttonPositive: "Allow all the time"
-    //             }
-    //         );
-    //         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-    //             console.log("You can use the Backgroundlocation");
-    //         } else {
-    //             console.log("location permission denied");
-    //         }
-    //     } catch (err) {
-    //         console.warn(err);
-    //     }
-    // }
+    }
+   
     const subscribe = (interest) => {
         console.log('subscribe', interest)
         // Note that only Android devices will respond to success/error callbacks
@@ -226,6 +232,7 @@ const LogIn = ({ navigation, route }) => {
         }
     };
     const [modalVisible, setModalVisible] = useState(false);
+    const [notificationPermission, setNotificationPermission] = useState(null)
     return (
         <View style={styles.container}>
             <Modal
@@ -306,6 +313,40 @@ const LogIn = ({ navigation, route }) => {
                     </View>
                 </View>
             </Modal>
+            {notificationPermission &&
+            (
+                <Modal
+                animationIn={'fadeIn'}
+                animationInTiming={800}
+                visible={notificationPermission}
+                transparent={false}
+                style={{ margin: 0 }}
+            >
+                <View style={styles.netContainer}>
+                    <View>
+                        <Image source={require('../../assets/Images/FourELogo.png')}>
+                        </Image>
+                    </View>
+                    <View style={{ width: '90%' }}>
+                        <View style={styles.netSecondMainView}>
+                            <Text style={styles.netTurnOnWifiText}>
+                                Please Allow Notification Permissions from setting to get notified everytime !
+                            </Text>
+                            <TouchableOpacity style={styles.netOkOpacity}
+                                onPress={() => {
+                                    setNotificationPermission(false)
+                                    Linking.openSettings()
+                                }} >
+                                <Text style={styles.netOkText}>
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            )}
+           
             <ScrollView
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}

@@ -13,6 +13,7 @@ import CustomerLoginReducer from './Reducers/CustomerLogin/CustomerLoginReducer'
 import NotificationDataReducer from './Reducers/CustomerNotifications/NotificationData'
 import CustomerProfileReducer from './Reducers/CustomerProfileData/CustomerProfile'
 import CustomerProfileUpdateReducer from './Reducers/CustomerProfileUpdate/CustomerProfileUpdateReducer'
+import CustomerSchedRideDetailsReducer from './Reducers/CustomerSchedRideDetails/CustomerSchedRideDetailsReducer'
 import CustomerSignUpReducer from './Reducers/CustomerSignup/CustomerSignUpReducer'
 import DriverLiveLocationReducer from './Reducers/DiverLiveLocationUpdate/DiverLiveLocationReducer'
 import DriverCompletedRideReducer from './Reducers/DriverCompletedRide/DriverCompletedRideReducer'
@@ -83,6 +84,7 @@ const appReducers = combineReducers ({
     CustProfileUpdate: CustomerProfileUpdateReducer,
     driverStatus: UpdateDriverActivityReducer,
     customerScheduleRide: CustomerFutureRidesReducer,
+    customerSchedRideDetails: CustomerSchedRideDetailsReducer,
 })
 
 const rootReducer = (state, action) => {

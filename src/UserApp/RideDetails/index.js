@@ -34,6 +34,7 @@ import CustomerHeader from '../CustomerHeader';
 import PushNotification from 'react-native-push-notification';
 import NetInfo from "@react-native-community/netinfo";
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import BackgroundJob from 'react-native-background-actions';
 
 const CurrentRideDetails = ({ route, delay }) => {
     const navigation = useNavigation();
@@ -429,7 +430,9 @@ const CurrentRideDetails = ({ route, delay }) => {
     const cancelReasonData = useSelector((state) => state.cancelRideReason.data)
     const cancelReasonError = useSelector((state) => state.cancelRideReason.error)
     const cancelReasonDispatch = useDispatch();
-
+    const removingBackgroundAction = async () => {
+        await BackgroundJob.stop()
+    }
     useEffect(() => {
         if (!cancelReasonLoading && cancelReasonData != null) {
             setModalVisible(false)
@@ -438,6 +441,7 @@ const CurrentRideDetails = ({ route, delay }) => {
             } else {
                 if (cancelReasonPress == true) {
                     alert(cancelReasonData.message)
+                    removingBackgroundAction()
                     ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
                     ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
                     ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))

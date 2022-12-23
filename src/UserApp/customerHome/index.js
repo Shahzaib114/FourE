@@ -96,16 +96,33 @@ const CustomerHomePage = (route) => {
         })
         messaging().onNotificationOpenedApp(txt => {
             if (txt.data.type == 'rideCompleted') {
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(null))
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify(null))
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('RiderOTW', JSON.stringify(null))
+
                 navigation.navigate('AccountCreated',
                     {
                         paramModal: true
                     }
                 )
+
             }
         })
         messaging().getInitialNotification().then(remoteMessage => {
             if (remoteMessage) {
                 if (remoteMessage.data.type == 'rideCompleted') {
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('RiderOTW', JSON.stringify(null))
+
                     navigation.navigate('AccountCreated',
                         {
                             paramModal: true
@@ -124,6 +141,14 @@ const CustomerHomePage = (route) => {
     const NotificationData = (txt) => {
         console.log('data of notification is', txt.data.type)
         if (txt.data.type == 'rideCompleted') {
+            ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+            ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
+            ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
+            ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
+            ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(null))
+            ClientLayer.getInstance().getDataManager().SaveValueForKey('rideOnTheWay', JSON.stringify(null))
+            ClientLayer.getInstance().getDataManager().SaveValueForKey('RiderOTW', JSON.stringify(null))
+
             navigation.navigate('AccountCreated',
                 {
                     paramModal: true

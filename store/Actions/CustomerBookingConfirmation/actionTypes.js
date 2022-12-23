@@ -3,3 +3,4 @@
 export const confirmBooking = 'confirmBooking'
 export const confirmBookingSuccess = 'confirmBookingSuccess'
 export const confirmBookingFailure = 'confirmBookingFailure'
+export const confirmBookingReset = 'confirmBookingReset'

@@ -1,4 +1,4 @@
-import { confirmBooking, confirmBookingFailure, confirmBookingSuccess } from "../../Actions/CustomerBookingConfirmation/actionTypes"
+import { confirmBooking, confirmBookingFailure, confirmBookingReset, confirmBookingSuccess } from "../../Actions/CustomerBookingConfirmation/actionTypes"
 
 const ConfirmBookingState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const CustomerBookingConfirmationReducer = (state = ConfirmBookingState, action)
                 runLoader: action.payload.confirmingBooking,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case confirmBookingReset:
+            return {
+                ...ConfirmBookingState,
             }
         default:
             return state;

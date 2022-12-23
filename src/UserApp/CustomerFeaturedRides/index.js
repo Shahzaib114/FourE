@@ -84,6 +84,7 @@ const CustomerUpComingTrips = ({ navigation }) => {
                 setNetModalVisible(true)
                 setIsSchedule(true)
             } else {
+                setGotoDetails(true)
                 infoDispatch(GettingCustomerFutureRideDetails({
                     job_id: jobId
                 }))
@@ -91,6 +92,15 @@ const CustomerUpComingTrips = ({ navigation }) => {
         })
     }
 
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+            setGotoDetails(false)
+            // Do something when the screen blurs
+        });
+        return unsubscribe;
+    }, [navigation]);
+
+    const [gotoDetails, setGotoDetails] = useState(false)
     const infoLoading = useSelector((state) => state.customerSchedRideDetails.runLoader)
     const infoData = useSelector((state) => state.customerSchedRideDetails.data)
     const infoError = useSelector((state) => state.customerSchedRideDetails.error)
@@ -98,17 +108,12 @@ const CustomerUpComingTrips = ({ navigation }) => {
 
     useEffect(() => {
         setDisplayView(infoLoading)
-        console.log('data ', infoData)
         if (!infoLoading && infoData != null) {
-            navigation.navigate('CustomerEditRide', {
-                rideParam: data.data
-            })
-            // if (data.data === 'error') {
-            //     setIsSchedule(true)
-            // } else {
-            //     setIsSchedule(false)
-            //     setTravelHistoryArray(data.data)
-            // }
+            if (gotoDetails) {
+                navigation.navigate('CustomerCancelRide', {
+                    rideParam: data.data
+                })
+            }
         }
         else if (!infoLoading && infoError != null) {
             alert('Credentials are Wrong')
@@ -216,7 +221,7 @@ const CustomerUpComingTrips = ({ navigation }) => {
                         <CustomeDrawerIcon />
                         <TouchableOpacity style={styles.headerImageOpacity}
                             onPress={() => navigation.navigate('CustomerProfileScreen')}>
-                            <Image source={require('../../../assets/Images/imgTwo.jpg')}
+                            <Image source={require('../../../assets/Images/user2.png')}
                                 style={styles.headerImageStyle}>
                             </Image>
                         </TouchableOpacity>
@@ -269,11 +274,11 @@ const CustomerUpComingTrips = ({ navigation }) => {
                                         data={travelHistoryArray}
                                         renderItem={({ item }) => (
                                             <TouchableOpacity
-                                            // onPress={()=>{
-                                            //      console.log('is', item.job_id)
-                                            //     _ValidateDetails(item.job_id)
-                                            //     // navigation.navigate('CustomerEditRide')
-                                            //     }}
+                                                onPress={() => {
+                                                    //  console.log('is', item.job_id),
+                                                    _ValidateDetails(item.job_id)
+                                                    //     // navigation.navigate('CustomerEditRide')
+                                                }}
                                                 style={styles.allitemsView}>
                                                 <View style={styles.textualMainView}>
                                                     <View style={styles.IconsView}>

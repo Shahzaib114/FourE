@@ -40,7 +40,6 @@ const IncomingRides = ({ route }) => {
                 alert('Customer Canceled The Job!')
                 PushNotification.cancelAllLocalNotifications()
                 navigation.navigate('TravelHistory')
-                
             }
         })
         messaging().getInitialNotification().then(remoteMessage => {

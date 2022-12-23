@@ -71,8 +71,8 @@ import DriverWalletScreen from './src/Wallet';
 import CustomerWalletScreen from './src/UserApp/CustomerWallet';
 import NetInfo from "@react-native-community/netinfo";
 import NetworkCheck from './src/NetworkError';
-import CustomerEditRide from './src/UserApp/CustomerEditRide';
 import BackgroundJob from 'react-native-background-actions';
+import CustomerCancelRide from './src/UserApp/CustomerCancelRide';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -274,7 +274,7 @@ function DrawerCustomerData() {
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background APP.js!', remoteMessage)
   if (remoteMessage.data.type == 'rideCompleted') {
-    ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+    ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
     ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
     ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
     ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
@@ -324,7 +324,7 @@ function App({ navigation }) {
           console.log('newRide saved')
         } else if (remoteMessage.data.type == 'rideCompleted') {
           // ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
-          ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+          ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
           ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
           ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
           ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
@@ -362,7 +362,7 @@ function App({ navigation }) {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={'SignupStart'}
+        <Stack.Navigator initialRouteName={'UserAppSplash'}
           screenOptions={{
             headerShown: false
           }}>
@@ -407,7 +407,7 @@ function App({ navigation }) {
           <Stack.Screen name="CustomerHeader" component={CustomerHeader} />
           <Stack.Screen name="CustomerTransactionHistory" component={CustomerTransactionHistory} />
           <Stack.Screen name="CustomerTransactionDetails" component={CustomerTransactionDetails} />
-          <Stack.Screen name="CustomerEditRide" component={CustomerEditRide} />
+          <Stack.Screen name="CustomerCancelRide" component={CustomerCancelRide} />
 
         </Stack.Navigator>
       </NavigationContainer>

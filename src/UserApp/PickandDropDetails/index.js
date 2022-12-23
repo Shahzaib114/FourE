@@ -18,7 +18,7 @@ import { getCustomerServiceTypes } from '../../../store/Actions/getCustomerServi
 import Colors from '../../../utility/colors/Colors';
 import { gettingPickandDropFares } from '../../../store/Actions/getPickandDropFare/pickandDropFare';
 import ClientLayer from '../../../components/Layers/ClientLayer';
-import { ConfirmingCustomerBooking, onResetCurrentRide } from '../../../store/Actions/CustomerBookingConfirmation/ConfirmBooking';
+import { ConfirmingCustomerBooking, goingToReset, onResetCurrentRide } from '../../../store/Actions/CustomerBookingConfirmation/ConfirmBooking';
 import { useNavigation } from '@react-navigation/native';
 import CustomerHeader from '../CustomerHeader';
 import NetInfo from "@react-native-community/netinfo";
@@ -58,7 +58,8 @@ const PickDropDetails = ({ route }) => {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('blur', () => {
-            onResetCurrentRide()
+            dispatch(goingToReset())
+            console.log(data)
             setGoToNext(false)
             setScheduleRideDone(false)
             setrideSelected(false)

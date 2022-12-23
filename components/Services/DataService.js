@@ -1,7 +1,7 @@
 //Responsible for Managing Network Calls
 
 // const axios = require('axios')
-import { ACCEPT_REJECT_RESPONSE, CONFIRMING_CUSTOMER_TRAVEL, CUSTOMER_CANCEL_RIDE, CUSTOMER_CANCEL_RIDE_RESAON, CUSTOMER_FEEDBACK_TO_DRIVER, CUSTOMER_FROM_AND_TO_FARES, CUSTOMER_FUTURE_JOBS, CUSTOMER_FUTURE_JOBS_DETAILS, CUSTOMER_LOGIN, CUSTOMER_NOTIFICATIONS, CUSTOMER_PROFILE, CUSTOMER_PROFILE_UPDATE, CUSTOMER_RESEND_SIGNUP_OTP, CUSTOMER_RESET_PASSWORD, CUSTOMER_SIGNUP, CUSTOMER_VERIFY_OTP, CUSTOMET_FORGOT_PASS, DIVER_ARRIVED_AT_RIDER, DRIVERDATA_API, DRIVER_ACTIVE_STATUS, DRIVER_COMPLETED_RIDE, FORGOTPASSMAIL, ForgotPassMail, FORGOTPASSOTP, GETTING_DRIVER_LIVE_LOCATION, GET_DRIVER_PROFILE, GET_TRANSACTION_DETAILS, GET_TRANSACTION_HISTORY, GET_TRAVEL_HISTORY_API, GET_TRAVEL_HISTORY_DETAILS, LOGIN_API, PICK_DROP_DETAILS_API, RESEND_OTP_API, RESETPASSAPI, SERVICETYPES_API, UPDATE_DRIVER_PROFILE, UPDATING_DRIVER_LIVE_LOCATION, VEHICLEINFO_API } from '../Common/Constants';
+import { ACCEPT_REJECT_RESPONSE, CONFIRMING_CUSTOMER_TRAVEL, CUSTOMER_CANCEL_FUTURE_RIDE, CUSTOMER_CANCEL_RIDE, CUSTOMER_CANCEL_RIDE_RESAON, CUSTOMER_FEEDBACK_TO_DRIVER, CUSTOMER_FROM_AND_TO_FARES, CUSTOMER_FUTURE_JOBS, CUSTOMER_FUTURE_JOBS_DETAILS, CUSTOMER_LOGIN, CUSTOMER_NOTIFICATIONS, CUSTOMER_PROFILE, CUSTOMER_PROFILE_UPDATE, CUSTOMER_RESEND_SIGNUP_OTP, CUSTOMER_RESET_PASSWORD, CUSTOMER_SIGNUP, CUSTOMER_VERIFY_OTP, CUSTOMET_FORGOT_PASS, DIVER_ARRIVED_AT_RIDER, DRIVERDATA_API, DRIVER_ACTIVE_STATUS, DRIVER_COMPLETED_RIDE, FORGOTPASSMAIL, ForgotPassMail, FORGOTPASSOTP, GETTING_DRIVER_LIVE_LOCATION, GET_DRIVER_PROFILE, GET_TRANSACTION_DETAILS, GET_TRANSACTION_HISTORY, GET_TRAVEL_HISTORY_API, GET_TRAVEL_HISTORY_DETAILS, LOGIN_API, PICK_DROP_DETAILS_API, RESEND_OTP_API, RESETPASSAPI, SERVICETYPES_API, UPDATE_DRIVER_PROFILE, UPDATING_DRIVER_LIVE_LOCATION, VEHICLEINFO_API } from '../Common/Constants';
 import axios from 'axios';
 class DataService {
 
@@ -798,7 +798,6 @@ class DataService {
                 job_id: payload.job_id,
 
             }).then(function (response) {
-                console.log('response ' , response.data)
                 if (response.data.success) {
                     successCallBack(response.data)
                 } else {
@@ -808,6 +807,25 @@ class DataService {
                 errorCallBack(error)
             })
     }
+
+     //Canceling Customer FutureRide
+     CustomerCancelingBookedRide(payload, successCallBack, errorCallBack) {
+        axios.post(CUSTOMER_CANCEL_FUTURE_RIDE,
+            {
+                job_id: payload.job_id,
+                is_cancle: payload.is_cancle
+
+            }).then(function (response) {
+                if (response.data.success) {
+                    successCallBack(response.data)
+                } else {
+                    errorCallBack(response.data.message)
+                }
+            }).catch(function (error) {
+                errorCallBack(error)
+            })
+    }
+
 }
 
 export default DataService;

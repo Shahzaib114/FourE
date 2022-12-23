@@ -40,7 +40,7 @@ const CustomerHomePage = (route) => {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            onResetCurrentRide()
+            // onResetCurrentRide()
             onResetCustomerProfile()
         });
         return unsubscribe;
@@ -96,7 +96,7 @@ const CustomerHomePage = (route) => {
         })
         messaging().onNotificationOpenedApp(txt => {
             if (txt.data.type == 'rideCompleted') {
-                ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
                 ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
                 ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
                 ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
@@ -115,7 +115,7 @@ const CustomerHomePage = (route) => {
         messaging().getInitialNotification().then(remoteMessage => {
             if (remoteMessage) {
                 if (remoteMessage.data.type == 'rideCompleted') {
-                    ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+                    ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
                     ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
                     ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
                     ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
@@ -141,7 +141,7 @@ const CustomerHomePage = (route) => {
     const NotificationData = (txt) => {
         console.log('data of notification is', txt.data.type)
         if (txt.data.type == 'rideCompleted') {
-            ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(null))
+            ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
             ClientLayer.getInstance().getDataManager().SaveValueForKey('ridestarted', JSON.stringify(null))
             ClientLayer.getInstance().getDataManager().SaveValueForKey('rideData', JSON.stringify(null))
             ClientLayer.getInstance().getDataManager().SaveValueForKey('fromLabel', JSON.stringify(null))
@@ -226,7 +226,6 @@ const CustomerHomePage = (route) => {
                     }
                 })
             })
-            console.log('Refreshed in history!');
         })
         return unsubscribe;
     }, [navigation]);
@@ -301,7 +300,7 @@ const CustomerHomePage = (route) => {
                     <TouchableOpacity style={styles.imageOpacity}
                         onPress={() => navigation.navigate('CustomerProfileScreen')}
                     >
-                        <Image source={require('../../../assets/Images/imgTwo.jpg')}
+                        <Image source={require('../../../assets/Images/user2.png')}
                             style={styles.imageStyle}>
                         </Image>
                     </TouchableOpacity>

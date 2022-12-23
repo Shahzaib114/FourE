@@ -42,5 +42,6 @@ module.exports = {
     CUSTOMER_PROFILE : BASE_URL + 'customer-show-profile',
     CUSTOMER_PROFILE_UPDATE :  BASE_URL+ 'customer-update-profile',
     CUSTOMER_FUTURE_JOBS : BASE_URL + 'feature-jobs',
-    CUSTOMER_FUTURE_JOBS_DETAILS : BASE_URL + 'edit-feature-job'
+    CUSTOMER_FUTURE_JOBS_DETAILS : BASE_URL + 'edit-feature-job',
+    CUSTOMER_CANCEL_FUTURE_RIDE : BASE_URL + 'cancel-feature-job',
 };

@@ -125,11 +125,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     indicator: {
-        width: '90%',
-        marginHorizontal: '5%',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginBottom: '1%'
+        // backgroundColor: Colors.getLightColor('mustardColor'),
+        width: '48%',
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding:'1%'
+    },
+    allowGps: {
+        width: '100%',
+        height: Dimensions.get('window').height * 0.35,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     fareMainView: {
         width: '90%',
@@ -142,11 +149,11 @@ const styles = StyleSheet.create({
     },
     fareText: {
         color: Colors.getLightColor('blackColor'),
-        fontSize: 18,
+        fontSize: 16,
         fontFamily: 'Montserrat-Medium',
         alignSelf: 'center',
         padding: '2%',
-        width: '70%'
+        width: '80%',
     },
     distanceText: {
         color: Colors.getLightColor('blackColor'),
@@ -154,7 +161,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Medium',
         alignSelf: 'center',
         padding: '2%',
-        width: '30%',
+        width: '20%',
     },
     confrimBookingOpacity: {
         backgroundColor: Colors.getLightColor('primaryColor'),
@@ -174,6 +181,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding:'1%'
         
+    },
+    fromMarker: {
+        padding: '2%',
+        backgroundColor: Colors.getLightColor('primaryColor'),
+        borderRadius: 25
     },
     confrimBookingText: {
         padding: '4%',

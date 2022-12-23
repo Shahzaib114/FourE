@@ -1,12 +1,13 @@
 import ClientLayer from "../../../components/Layers/ClientLayer";
-import { confirmBooking, confirmBookingFailure, confirmBookingSuccess } from "./actionTypes";
+import { confirmBooking, confirmBookingFailure, confirmBookingReset, confirmBookingSuccess } from "./actionTypes";
 
 export const onResetCurrentRide = () => {
-    console.log('inside reset')
-
+    console.log('inside reset onResetCurrentRide')
     return (dispatch) => {
         dispatch(fetching(false))
-        dispatch(onFetchingResponse())
+        goingToReset()
+        // dispatch(onFetchingResponse())
+        // dispatch(goingToReset(false))
     }
 }
 
@@ -23,10 +24,26 @@ export const ConfirmingCustomerBooking = (payload) => {
 }
 
 const fetching = (status) => {
+    console.log('inside fetching')
     return {
         type: confirmBooking,
         payload: { confirmingBooking: status }
     }
+}
+
+// export const resetReducer = () => {
+//     console.log('resetting')
+//     return (dispatch) => {
+//         dispatch(goingToReset())
+//     }
+// }
+const goingToReset = () => {
+    console.log('inside goingToReset')
+    return {
+        type: confirmBookingReset,
+        // payload: { confirmingBooking: status }
+    }
+
 }
 
 const onFetchingResponse = (status, data = null, error = null) => {

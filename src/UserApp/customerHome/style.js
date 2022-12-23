@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     bookRideText: {
         color: Colors.getLightColor('secondaryColor'),
         fontFamily: 'Montserrat-Medium',
-        fontSize: 17, marginHorizontal: '2%'
+        fontSize: 20,
     },
     bookRideIcon: {
         color: Colors.getLightColor('secondaryColor'),

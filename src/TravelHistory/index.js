@@ -310,9 +310,8 @@ const TravelHistory = ({ route }) => {
                 })
             }
         })
+    }, [])
 
-
-    }, []);
     const getPermissions = async () => {
         try {
             const granted = await PermissionsAndroid.request(
@@ -330,8 +329,13 @@ const TravelHistory = ({ route }) => {
             console.warn(err);
         }
     }
+    
     useEffect(() => {
         setDisplayView(loading)
+        // console.log('daa', data)
+        // if(data[0] === ''){
+        //     console.log('null')
+        // }
         if (!loading && data != null) {
             setTravelHistoryArray(data)
         }

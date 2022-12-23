@@ -98,7 +98,7 @@ const CustomerHeader = (props) => {
 
                 <TouchableOpacity style={styles.imageOpacity}
                     onPress={() => navigation.navigate(userorDriverProfile)}>
-                    <Image source={require('../../../assets/Images/imgTwo.jpg')}
+                    <Image source={require('../../../assets/Images/user2.png')}
                         style={styles.imageStyle}>
                     </Image>
                 </TouchableOpacity>

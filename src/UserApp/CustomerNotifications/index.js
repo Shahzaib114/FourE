@@ -111,7 +111,7 @@ const CustomerNotificationScreen = () => {
                     <CustomeDrawerIcon />
                     <TouchableOpacity style={styles.prifileImageView}
                         onPress={() => navigation.navigate('CustomerProfileScreen')}>
-                        <Image source={require('../../../assets/Images/imgTwo.jpg')}
+                        <Image source={require('../../../assets/Images/user2.png')}
                             style={styles.profileImageStyle}>
                         </Image>
                     </TouchableOpacity>

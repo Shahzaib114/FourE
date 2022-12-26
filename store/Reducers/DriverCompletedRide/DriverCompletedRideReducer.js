@@ -1,13 +1,13 @@
-import { driverCompletedRide, driverCompletedRideFailure, driverCompletedRideSuccess } from "../../Actions/RideCompleted/actionTypes"
+import { driverCompletedRide, driverCompletedRideFailure, driverCompletedRideReset, driverCompletedRideSuccess } from "../../Actions/RideCompleted/actionTypes"
 
-const driverLiveLocationState = {
+const driverCompletedRideState = {
     runLoader: false,
     data: null,
     error: null,
 }
 
-const DriverCompletedRideReducer = (state = driverLiveLocationState, action ) => {
-    switch(action.type) {
+const DriverCompletedRideReducer = (state = driverCompletedRideState, action) => {
+    switch (action.type) {
         case driverCompletedRide:
             return {
                 ...state,
@@ -26,6 +26,10 @@ const DriverCompletedRideReducer = (state = driverLiveLocationState, action ) =>
                 runLoader: action.payload.rideCompleted,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case driverCompletedRideReset:
+            return {
+                ...driverCompletedRideState,
             }
         default:
             return state

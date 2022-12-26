@@ -1,4 +1,4 @@
-import { getCustomerFutureRideDetails, getCustomerFutureRideDetailsFailure, getCustomerFutureRideDetailsSuccess } from "../../Actions/CustomerFutureRideDetails/actionTypes"
+import { getCustomerFutureRideDetails, getCustomerFutureRideDetailsFailure, getCustomerFutureRideDetailsReset, getCustomerFutureRideDetailsSuccess } from "../../Actions/CustomerFutureRideDetails/actionTypes"
 
 const CustomerSchedRideDetailState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const CustomerSchedRideDetailsReducer = (state = CustomerSchedRideDetailState, a
                 runLoader: action.payload.customerScheduleInfo,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case getCustomerFutureRideDetailsReset:
+            return {
+                ...CustomerSchedRideDetailState,
             }
         default:
             return state

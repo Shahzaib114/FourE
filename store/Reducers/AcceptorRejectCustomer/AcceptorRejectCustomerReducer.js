@@ -1,4 +1,4 @@
-import { acceptRejectCustomer, acceptRejectCustomerFailure, acceptRejectCustomerSuccess } from "../../Actions/AcceptorRejectCustomer/actionTypes"
+import { acceptRejectCustomer, acceptRejectCustomerFailure, acceptRejectCustomerReset, acceptRejectCustomerSuccess } from "../../Actions/AcceptorRejectCustomer/actionTypes"
 
 const acceptingRejectingState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const AcceptorRejectCustomerReducer = (state = acceptingRejectingState, action) 
                 runLoader: action.payload.acceptingRejecting,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case acceptRejectCustomerReset:
+            return {
+                ...acceptingRejectingState,
             }
         default:
             return state;

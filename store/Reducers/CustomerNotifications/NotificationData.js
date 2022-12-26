@@ -1,4 +1,4 @@
-import { getNotifications, getNotificationsFailure, getNotificationsSuccess } from "../../Actions/CustomerNotifications/actionTypes"
+import { getNotifications, getNotificationsFailure, getNotificationsReset, getNotificationsSuccess } from "../../Actions/CustomerNotifications/actionTypes"
 
 const notificationDataState = {
     runLoader: true,
@@ -26,6 +26,10 @@ const NotificationDataReducer = (state = notificationDataState, action) => {
                 runLoader: action.payload.gettingNotification,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case getNotificationsReset:
+            return {
+                ...notificationDataState,
             }
         default:
             return state

@@ -1,4 +1,4 @@
-import { postCustomerResendRequest, postCustomerResendRequestFailure, postCustomerResendRequestSuccess } from "../../Actions/ResendCustomerSignupOTP/actionTypes"
+import { postCustomerResendRequest, postCustomerResendRequestFailure, postCustomerResendRequestReset, postCustomerResendRequestSuccess } from "../../Actions/ResendCustomerSignupOTP/actionTypes"
 
 const ResendOTPState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const ResendCustomerSIgnupOTPReducer = (state = ResendOTPState, action) => {
                 runLoader: action.payload.resendOtp,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case postCustomerResendRequestReset:
+            return {
+                ...ResendOTPState,
             }
         default:
             return state

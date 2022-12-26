@@ -73,6 +73,7 @@ import NetInfo from "@react-native-community/netinfo";
 import NetworkCheck from './src/NetworkError';
 import BackgroundJob from 'react-native-background-actions';
 import CustomerCancelRide from './src/UserApp/CustomerCancelRide';
+import CustomerRentACar from './src/UserApp/RentACar';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -408,6 +409,8 @@ function App({ navigation }) {
           <Stack.Screen name="CustomerTransactionHistory" component={CustomerTransactionHistory} />
           <Stack.Screen name="CustomerTransactionDetails" component={CustomerTransactionDetails} />
           <Stack.Screen name="CustomerCancelRide" component={CustomerCancelRide} />
+          <Stack.Screen name="CustomerRentACar" component={CustomerRentACar} />
+
 
         </Stack.Navigator>
       </NavigationContainer>

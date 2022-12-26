@@ -3,3 +3,4 @@
 export const TransactionDetails = 'TransactionDetails'
 export const TransactionDetailsSuccess = 'TransactionDetailsSuccess'
 export const TransactionDetailsFailure = 'TransactionDetailsFailure'
+export const TransactionDetailsReset = 'TransactionDetailsReset'

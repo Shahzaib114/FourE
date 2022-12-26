@@ -368,15 +368,17 @@ const CustomerHomePage = (route) => {
                 </View>
 
                 <View style={styles.thirdView}>
-                    <TouchableOpacity style={styles.sendParcelOpacity}>
+                    <TouchableOpacity onPress={()=> navigation.navigate('CustomerRentACar')}
+                    style={styles.sendParcelOpacity}>
                         <Text style={styles.sendParcelText}>
-                            Send Parcel
+                            Rent a Car
                         </Text>
                         <View style={styles.verticleLine}></View>
-                        <Image source={require('../../../assets/Images/gift.png')} style={styles.gidtImage}>
+                        <Image source={require('../../../assets/Images/sedan.png')} style={styles.gidtImage}>
                         </Image>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.sendParcelOpacity}>
+                    <TouchableOpacity 
+                    style={styles.sendParcelOpacity}>
                         <Text style={styles.sendParcelText}>
                             Order Food
                         </Text>

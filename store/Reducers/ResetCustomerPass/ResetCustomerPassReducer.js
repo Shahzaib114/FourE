@@ -1,4 +1,4 @@
-import { CustomerResetPassword, CustomerResetPasswordFailure, CustomerResetPasswordSuccess } from "../../Actions/CustomerResetPass/actionTypes"
+import { CustomerResetPassword, CustomerResetPasswordFailure, CustomerResetPasswordReset, CustomerResetPasswordSuccess } from "../../Actions/CustomerResetPass/actionTypes"
 
 const ResetCustomerPassState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const ResetCustomerPassReducer = (state = ResetCustomerPassState, action) => {
                 runLoader: action.payload.customerresetpass,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case CustomerResetPasswordReset:
+            return {
+                ...ResetCustomerPassState,
             }
         default:
             return state

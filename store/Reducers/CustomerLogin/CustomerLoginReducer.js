@@ -1,4 +1,4 @@
-import { customerAuthentication, customerAuthenticationFailure, customerAuthenticationSuccess } from "../../Actions/CustomerLogin/actionTypes"
+import { customerAuthentication, customerAuthenticationFailure, customerAuthenticationReset, customerAuthenticationSuccess } from "../../Actions/CustomerLogin/actionTypes"
 
 const customerAuthenticationState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const CustomerLoginReducer = (state = customerAuthenticationState, action) => {
                 runLoader: action.payload.authenticatingcustomer,
                 data: action.payload.authData,
                 error: action.payload.authError
+            }
+        case customerAuthenticationReset:
+            return {
+                ...customerAuthenticationState,
             }
         default:
             return state

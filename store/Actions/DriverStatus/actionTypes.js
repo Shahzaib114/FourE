@@ -3,3 +3,4 @@
 export const DriverStatusUpdate = 'DriverStatusUpdate'
 export const DriverStatusUpdateSuccess = 'DriverStatusUpdateSuccess'
 export const DriverStatusUpdateFailure = 'DriverStatusUpdateFailure'
+export const DriverStatusUpdateReset = 'DriverStatusUpdateReset'

@@ -1,4 +1,4 @@
-import { getTravelHistory, getTravelHistoryFailure, getTravelHistorySuccess } from "../../Actions/getTravelHistory/actionTypes"
+import { getTravelHistory, getTravelHistoryFailure, getTravelHistoryReset, getTravelHistorySuccess } from "../../Actions/getTravelHistory/actionTypes"
 
 const PickandDropDetailsState = {
     runLoader: true,
@@ -26,6 +26,10 @@ const TravelHistotyReducer = (state = PickandDropDetailsState, action) => {
                 runLoader: action.payload.travelhistory,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case getTravelHistoryReset:
+            return {
+                ...PickandDropDetailsState,
             }
         default:
             return state

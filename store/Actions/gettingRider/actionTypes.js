@@ -3,3 +3,4 @@
 export const getRider = 'getRider'
 export const getRiderSuccess = 'getRiderSuccess'
 export const getRiderFailure = 'getRiderFailure'
+export const getRiderReset = 'getRiderReset'

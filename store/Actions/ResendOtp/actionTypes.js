@@ -3,3 +3,4 @@
 export const postResendRequest = 'postResendRequest'
 export const postResendRequestSuccess = 'postResendRequestSuccess'
 export const postResendRequestFailure = 'postResendRequestFailure'
+export const postResendRequestReset = 'postResendRequestReset'

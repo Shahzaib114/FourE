@@ -3,3 +3,4 @@
 export const getServiceTypes = 'getServiceTypes'
 export const ServiceTypeSuccess = 'ServiceTypeSuccess'
 export const ServiceTypeFailure = 'ServiceTypeFailure'
+export const getServiceTypesReset = 'getServiceTypesReset'

@@ -1,4 +1,4 @@
-import { getServiceTypes , ServiceTypeSuccess, ServiceTypeFailure } from "../../Actions/ServiceTypes/actionTypes";
+import { getServiceTypes , ServiceTypeSuccess, ServiceTypeFailure, getServiceTypesReset } from "../../Actions/ServiceTypes/actionTypes";
 const ServiceTypesState = {
     runLoader: true,
     data: null,
@@ -25,6 +25,10 @@ const ServiceTypesReducer = (state = ServiceTypesState, action) => {
                 runLoader: action.payload.serviceTypes,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case getServiceTypesReset:
+            return {
+                ...ServiceTypesState,
             }
         default:
             return state

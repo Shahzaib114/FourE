@@ -3,3 +3,4 @@
 export const DriverDataUpdate = 'DriverDataUpdate'
 export const DriverDataUpdateSuccess = 'DriverDataUpdateSuccess'
 export const DriverDataUpdateFailure = 'DriverDataUpdateFailure'
+export const DriverDataUpdateReset = 'DriverDataUpdateReset'

@@ -1,4 +1,4 @@
-import { CustomerSIgningUp, CustomerSIgningUpFailure, CustomerSIgningUpSuccess } from "../../Actions/CustomerSignup/actionTypes"
+import { CustomerSIgningUp, CustomerSIgningUpFailure, CustomerSIgningUpReset, CustomerSIgningUpSuccess } from "../../Actions/CustomerSignup/actionTypes"
 
 const CustomerSignupState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const CustomerSignUpReducer = (state = CustomerSignupState, action ) => {
                 runLoader: action.payload.signupUser,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case CustomerSIgningUpReset:
+            return {
+                ...CustomerSignupState,
             }
         default:
             return state

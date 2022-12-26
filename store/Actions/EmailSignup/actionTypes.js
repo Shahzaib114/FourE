@@ -3,3 +3,4 @@
 export const signup = 'signup'
 export const signupSuccess = 'signupSuccess'
 export const signupFailure = 'signupFailure'
+export const signupReset = 'signupReset'

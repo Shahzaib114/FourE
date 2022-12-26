@@ -1,4 +1,4 @@
-import { postCustomerForgotMail, postCustomerForgotMailFailure, postCustomerForgotMailSuccess } from "../../Actions/CustomerForgotPass/actionTypes"
+import { postCustomerForgotMail, postCustomerForgotMailFailure, postCustomerForgotMailReset, postCustomerForgotMailSuccess } from "../../Actions/CustomerForgotPass/actionTypes"
 
 const ForgotCustomerPassState = {
     runLoader: false,
@@ -27,6 +27,10 @@ const CustomerForgotPassReducer = (state = ForgotCustomerPassState, action) => {
                 data: action.payload.data,
                 error: action.payload.error
             }
+        case postCustomerForgotMailReset:
+                return {
+                    ...ForgotCustomerPassState,
+                }
         default:
             return state
     }

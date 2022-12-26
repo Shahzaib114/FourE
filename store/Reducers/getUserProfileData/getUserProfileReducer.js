@@ -1,4 +1,4 @@
-import { getDriverProfileData, getDriverProfileDataFailure, getDriverProfileDataSuccess } from "../../Actions/getUserProfile/actionTypes"
+import { getDriverProfileData, getDriverProfileDataFailure, getDriverProfileDataReset, getDriverProfileDataSuccess } from "../../Actions/getUserProfile/actionTypes"
 
 const ProfileInformationState = {
     runLoader: true,
@@ -26,6 +26,10 @@ const getUserProfileReducer = (state = ProfileInformationState, action) => {
                 runLoader: action.payload.profileData,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case getDriverProfileDataReset:
+            return {
+                ...ProfileInformationState,
             }
         default:
             return state;

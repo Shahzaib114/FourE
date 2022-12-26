@@ -1,4 +1,4 @@
-import { getTravelfare, getTravelfareFailure, getTravelfareSuccess } from "../../Actions/getPickandDropFare/actionTypes"
+import { getTravelfare, getTravelfareFailure, getTravelfareReset, getTravelfareSuccess } from "../../Actions/getPickandDropFare/actionTypes"
 
 const customerTravellingFareState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const customerTravellingFareReducer = (state = customerTravellingFareState, acti
                 runLoader: action.payload.travelingFare,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case getTravelfareReset:
+            return {
+                ...customerTravellingFareState,
             }
         default:
             return state;

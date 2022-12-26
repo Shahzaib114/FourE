@@ -1,4 +1,4 @@
-import { postForgotMail, ForgotMailSuccess, ForgotMailFailure } from "../../Actions/ForgotPassword/actionTypes"
+import { postForgotMail, ForgotMailSuccess, ForgotMailFailure, postForgotMailReset } from "../../Actions/ForgotPassword/actionTypes"
 
 const ForgotPassState = {
     runLoader: false,
@@ -27,6 +27,10 @@ const ForgotPasswordReducer = (state = ForgotPassState, action) => {
                 data: action.payload.data,
                 error: action.payload.error
             }
+        case postForgotMailReset:
+                return {
+                    ...ForgotPassState,
+                }
         default:
             return state
     }

@@ -18,7 +18,7 @@ import { getCustomerServiceTypes } from '../../../store/Actions/getCustomerServi
 import Colors from '../../../utility/colors/Colors';
 import { gettingPickandDropFares } from '../../../store/Actions/getPickandDropFare/pickandDropFare';
 import ClientLayer from '../../../components/Layers/ClientLayer';
-import { ConfirmingCustomerBooking, goingToReset, onResetCurrentRide } from '../../../store/Actions/CustomerBookingConfirmation/ConfirmBooking';
+import { ConfirmingCustomerBooking, onResetCurrentRide } from '../../../store/Actions/CustomerBookingConfirmation/ConfirmBooking';
 import { useNavigation } from '@react-navigation/native';
 import CustomerHeader from '../CustomerHeader';
 import NetInfo from "@react-native-community/netinfo";
@@ -58,7 +58,7 @@ const PickDropDetails = ({ route }) => {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('blur', () => {
-            dispatch(goingToReset())
+            onResetCurrentRide()
             console.log(data)
             setGoToNext(false)
             setScheduleRideDone(false)
@@ -170,12 +170,13 @@ const PickDropDetails = ({ route }) => {
         console.log(confirmationData)
         if (!confirmationLoading && confirmationData != null) {
             if (confirmationData.message === 'Feature job created') {
-                if (scheduleRideDone === true) {
+                // if (scheduleRideDone === true) {
+                    confirmationBookingDispatch({type:'confirmBookingReset'})
                     alert('Scheduled Ride has been created, you can check it in Upcoming Trips!')
                     navigation.navigate('CustomerHomePage')
-                } else {
-                    console.log('its false')
-                }
+                // } else {
+                //     console.log('its false')
+                // }
             } else {
                 if (confirmationData.success) {
                     if (confirmationData.message == "Driver not available") {
@@ -512,6 +513,7 @@ const PickDropDetails = ({ route }) => {
                             query={{
                                 key: 'AIzaSyAbmXsLJF-4QhiKTNK204wFcNUxs_4akC8',
                                 language: 'en',
+                                components: 'country:pk|country:pk',
                                 radius: 3000,
                                 location: `${position.latitude}, ${position.longitude}`
                             }}
@@ -602,6 +604,7 @@ const PickDropDetails = ({ route }) => {
                             query={{
                                 key: 'AIzaSyAbmXsLJF-4QhiKTNK204wFcNUxs_4akC8',
                                 language: 'en',
+                                components: 'country:pk|country:pk',
                                 radius: 3000,
                                 location: `${destination.latitude}, ${destination.longitude}`
                             }}

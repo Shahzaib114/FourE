@@ -3,3 +3,4 @@
 export const postCustomerResendRequest = 'postCustomerResendRequest'
 export const postCustomerResendRequestSuccess = 'postCustomerResendRequestSuccess'
 export const postCustomerResendRequestFailure = 'postCustomerResendRequestFailure'
+export const postCustomerResendRequestReset = 'postCustomerResendRequestReset'

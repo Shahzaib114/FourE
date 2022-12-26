@@ -3,3 +3,4 @@
 export const getDriverProfileData = 'getDriverProfileData'
 export const getDriverProfileDataSuccess = 'getDriverProfileDataSuccess'
 export const getDriverProfileDataFailure = 'getDriverProfileDataFailure'
+export const getDriverProfileDataReset = 'getDriverProfileDataReset'

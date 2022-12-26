@@ -1,4 +1,4 @@
-import { getTravelingDetails, getTravelingDetailsFailure, getTravelingDetailsSuccess } from "../../Actions/getTravelingDetails/actionTypes"
+import { getTravelingDetails, getTravelingDetailsFailure, getTravelingDetailsReset, getTravelingDetailsSuccess } from "../../Actions/getTravelingDetails/actionTypes"
 
 const travelHistoryDetailsState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const TravelingHistoryDetailsReducer = (state = travelHistoryDetailsState, actio
                 runLoader: action.payload.gettingDetails,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case getTravelingDetailsReset:
+            return {
+                ...travelHistoryDetailsState,
             }
         default:
             return state

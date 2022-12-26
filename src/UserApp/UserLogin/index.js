@@ -23,7 +23,8 @@ import { CustomerValidation } from '../../../store/Actions/CustomerLogin/Custome
 import RNPusherPushNotifications from "react-native-pusher-push-notifications";
 import NetInfo from "@react-native-community/netinfo";
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
+// import { check, PERMISSIONS, request } from 'react-native-permissions';
+import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 const CustomerLogin = ({ navigation, route, props }) => {
     const [userMail, setUserMail] = useState('');
     const [userPass, setUserPass] = useState('');
@@ -55,31 +56,45 @@ const CustomerLogin = ({ navigation, route, props }) => {
         );
     }
     const getPermissionsnotification = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION,
-                // {
-                //     title: "FourE Permission",
-                //     message:
-                //         "FourE App needs access to your notifications " +
-                //         "so you can recieve notifications.",
-                //     buttonNeutral: "Ask Me Later",
-                //     buttonNegative: "Cancel",
-                //     buttonPositive: "OK"
-                // }
-            )
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log("You can use the notifications");
-                setNotificationPermission(false)
-            } else {
-                console.log("notifications permission denied")
-                setNotificationPermission(true)
-            }
-        } catch (err) {
-            console.warn(err);
-        }
-
+        check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
+            .then(async(result) => {
+                switch (result) {
+                    case RESULTS.UNAVAILABLE:
+                        console.log('This feature is not available (on this device / in this context)');
+                        break;
+                    case RESULTS.DENIED:
+                        try {
+                            const granted = await PermissionsAndroid.request(
+                                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION,
+                            )
+                            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                                console.log("You can use the notifications");
+                                // setNotificationPermission(false)
+                            } else {
+                                console.log("notifications permission denied")
+                                // setNotificationPermission(true)
+                            }
+                        } catch (err) {
+                            console.warn(err);
+                        }
+                        console.log('The permission has not been requested / is denied but requestable')
+                        break;
+                    case RESULTS.LIMITED:
+                        console.log('The permission is limited: some actions are possible');
+                        break;
+                    case RESULTS.GRANTED:
+                        console.log('The permission is granted');
+                        break;
+                    case RESULTS.BLOCKED:
+                        console.log('The permission is denied and not requestable anymore');
+                        break;
+                }
+            })
+            .catch((error) => {
+                console.warn(error)
+            });
     };
+   
     useEffect(() => {
         getPermissionsnotification()
     }, [])

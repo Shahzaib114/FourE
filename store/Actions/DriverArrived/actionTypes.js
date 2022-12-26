@@ -3,3 +3,4 @@
 export const rideStartedFromDriver = 'rideStartedFromDriver'
 export const rideStartedFromDriverSuccess = 'rideStartedFromDriverSuccess'
 export const rideStartedFromDriverFailure = 'rideStartedFromDriverFailure'
+export const rideStartedFromDriverReset = 'rideStartedFromDriverReset'

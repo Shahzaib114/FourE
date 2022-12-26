@@ -1,4 +1,4 @@
-import { cancelCurrentRide, cancelCurrentRideFailure, cancelCurrentRideSuccess } from "../../Actions/CancelRide/actionTypes"
+import { cancelCurrentRide, cancelCurrentRideFailure, cancelCurrentRideReset, cancelCurrentRideSuccess } from "../../Actions/CancelRide/actionTypes"
 
 const cancelingRideState = {
     runLoader: false,
@@ -27,6 +27,10 @@ const CancelCurrentRideReducer = (state = cancelingRideState, action) => {
                 data: action.payload.data,
                 error: action.payload.error
             }
+        case cancelCurrentRideReset:
+                return {
+                    ...cancelingRideState,
+                }
         default:
             return state;
     }

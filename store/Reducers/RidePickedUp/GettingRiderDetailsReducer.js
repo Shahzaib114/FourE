@@ -1,4 +1,4 @@
-import { rideStartedFromDriver, rideStartedFromDriverFailure, rideStartedFromDriverSuccess } from "../../Actions/DriverArrived/actionTypes"
+import { rideStartedFromDriver, rideStartedFromDriverFailure, rideStartedFromDriverReset, rideStartedFromDriverSuccess } from "../../Actions/DriverArrived/actionTypes"
 
 const RideStartedState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const DriverPickedRiderReducer = (state = RideStartedState, action) => {
                 runLoader: action.payload.pickedUpRide,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case rideStartedFromDriverReset:
+            return {
+                ...RideStartedState,
             }
         default:
             return state

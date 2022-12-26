@@ -1,4 +1,4 @@
-import { postForgotOtp, postForgotOtpSuccess, postForgotOtpFailure } from "../../Actions/ForgotOtp/actionTypes"
+import { postForgotOtp, postForgotOtpSuccess, postForgotOtpFailure, postForgotOtpReset } from "../../Actions/ForgotOtp/actionTypes"
 
 const ForgotPassOTPState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const ForgotPasswordOTPReducer = (state = ForgotPassOTPState, action) => {
                 runLoader: action.payload.forgotOTP,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case postForgotOtpReset:
+            return {
+                ...ForgotPassOTPState,
             }
         default:
             return state

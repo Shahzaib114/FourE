@@ -1,4 +1,4 @@
-import { veriftyCustomerForgotOtp, veriftyCustomerForgotOtpFailure, veriftyCustomerForgotOtpSuccess } from "../../Actions/CustomerForgotOTP/actionTypes"
+import { veriftyCustomerForgotOtp, veriftyCustomerForgotOtpFailure, veriftyCustomerForgotOtpReset, veriftyCustomerForgotOtpSuccess } from "../../Actions/CustomerForgotOTP/actionTypes"
 
 const CustomerForgotPassOTPState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const CustomerForgotOTPReducer = (state = CustomerForgotPassOTPState, action) =>
                 runLoader: action.payload.forgotCustomerOTP,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case veriftyCustomerForgotOtpReset:
+            return {
+                ...CustomerForgotPassOTPState,
             }
         default:
             return state

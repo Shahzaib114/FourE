@@ -1,4 +1,4 @@
-import { signup, signupSuccess, signupFailure } from "../../Actions/EmailSignup/actionTypes";
+import { signup, signupSuccess, signupFailure, signupReset } from "../../Actions/EmailSignup/actionTypes";
 
 const signUpState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const SignUpReducer = (state = signUpState, action ) => {
                 runLoader: action.payload.authenticating,
                 data: action.payload.authData,
                 error: action.payload.authError
+            }
+        case signupReset:
+            return {
+                ...signUpState,
             }
         default:
             return state

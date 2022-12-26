@@ -3,3 +3,4 @@
 export const customerFeedbackAdding = 'customerFeedbackAdding'
 export const customerFeedbackAddingSuccess = 'customerFeedbackAddingSuccess'
 export const customerFeedbackAddingFailure = 'customerFeedbackAddingFailure'
+export const customerFeedbackAddingReset = 'customerFeedbackAddingReset'

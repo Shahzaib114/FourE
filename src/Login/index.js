@@ -25,6 +25,7 @@ import ClientLayer from '../../components/Layers/ClientLayer';
 import Colors from '../../utility/colors/Colors';
 import { useNavigation } from '@react-navigation/native';
 import NetInfo from "@react-native-community/netinfo";
+import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 const LogIn = ({ navigation, route }) => {
 
@@ -64,34 +65,46 @@ const LogIn = ({ navigation, route }) => {
             }
         });
         // alert('Please Allow notification permission from setting')
-        getPermissionsnotification()
+        
     }, []);
     const getPermissionsnotification = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION,
-                // {
-                //     title: "FourE Permission",
-                //     message:
-                //         "FourE App needs access to your notifications " +
-                //         "so you can recieve notifications.",
-                //     buttonNeutral: "Ask Me Later",
-                //     buttonNegative: "Cancel",
-                //     buttonPositive: "OK"
-                // }
-            )
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log("You can use the notifications");
-                setNotificationPermission(false)
-            } else {
-                console.log("notifications permission denied")
-                setNotificationPermission(true)
-            }
-        } catch (err) {
-            console.warn(err);
-        }
+        check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
+            .then(async(result) => {
+                switch (result) {
+                    case RESULTS.UNAVAILABLE:
+                        console.log('This feature is not available (on this device / in this context)');
+                        break;
+                    case RESULTS.DENIED:
+                        try {
+                            const granted = await PermissionsAndroid.request(
+                                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION,
+                            )
+                            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                                console.log("You can use the notifications");
+                            } else {
+                                console.log("notifications permission denied")
+                            }
+                        } catch (err) {
+                            console.warn(err);
+                        }
+                        console.log('The permission has not been requested / is denied but requestable')
+                        break;
+                    case RESULTS.LIMITED:
+                        console.log('The permission is limited: some actions are possible');
+                        break;
+                    case RESULTS.GRANTED:
+                        console.log('The permission is granted');
+                        break;
+                    case RESULTS.BLOCKED:
+                        console.log('The permission is denied and not requestable anymore');
+                        break;
+                }
+            })
+            .catch((error) => {
+                console.warn(error)
+            });
+    }
 
-    };
     const getPermissions = async () => {
         try {
             const granted = await PermissionsAndroid.request(
@@ -99,9 +112,11 @@ const LogIn = ({ navigation, route }) => {
             );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 console.log("You can use the location");
+                getPermissionsnotification()
                 // getBackgroundDone()
             } else {
                 console.log("location permission denied");
+                getPermissionsnotification()
             }
         } catch (err) {
             console.warn(err);

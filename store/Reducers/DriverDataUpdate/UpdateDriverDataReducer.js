@@ -1,4 +1,4 @@
-import { DriverDataUpdate, DriverDataUpdateFailure, DriverDataUpdateSuccess } from "../../Actions/DriverUpdatedData/actionTypes"
+import { DriverDataUpdate, DriverDataUpdateFailure, DriverDataUpdateReset, DriverDataUpdateSuccess } from "../../Actions/DriverUpdatedData/actionTypes"
 
 const UpdatingDriverProfileState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const UpdateDriverDataReducer = (state = UpdatingDriverProfileState, action ) =>
                 runLoader: action.payload.updateDriverProfile,
                 data: action.payload.data,
                 error: action.payload.error
+            } 
+        case DriverDataUpdateReset:
+            return {
+                ...UpdatingDriverProfileState,
             }
         default:
             return state

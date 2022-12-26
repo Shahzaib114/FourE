@@ -21,5 +21,6 @@ export default {
     lightWhiteColor:'#F1F1F1',
     verticalLineColor:'#B5D5FB',
     lightBlueColor: '#c2c3d5',
+    extraLightBlueColor: '#EEF3F9'
     
 }

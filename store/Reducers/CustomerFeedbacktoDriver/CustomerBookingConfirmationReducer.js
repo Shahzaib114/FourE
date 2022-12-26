@@ -1,4 +1,4 @@
-import { customerFeedbackAdding, customerFeedbackAddingFailure, customerFeedbackAddingSuccess } from "../../Actions/CustomerFeedback/actionTypes"
+import { customerFeedbackAdding, customerFeedbackAddingFailure, customerFeedbackAddingReset, customerFeedbackAddingSuccess } from "../../Actions/CustomerFeedback/actionTypes"
 
 const CustomerFeedbackState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const CustomerFeedbackReducer = (state = CustomerFeedbackState, action) => {
                 runLoader: action.payload.addingFeedback,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case customerFeedbackAddingReset:
+            return {
+                ...CustomerFeedbackState,
             }
         default:
             return state;

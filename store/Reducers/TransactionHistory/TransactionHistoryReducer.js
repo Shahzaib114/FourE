@@ -1,4 +1,4 @@
-import { TransactionHistory, TransactionHistoryFailure, TransactionHistorySuccess } from "../../Actions/TransactionHistory/actionTypes"
+import { TransactionHistory, TransactionHistoryFailure, TransactionHistoryReset, TransactionHistorySuccess } from "../../Actions/TransactionHistory/actionTypes"
 
 const transactionHistoryState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const TransactionHistoryReducer = (state = transactionHistoryState, action) => {
                 runLoader: action.payload.transactionHistoryData,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case TransactionHistoryReset:
+            return {
+                ...transactionHistoryState,
             }
         default:
             return state

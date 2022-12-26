@@ -3,3 +3,4 @@
 export const getCustomerFutureRideDetails = 'getCustomerFutureRideDetails'
 export const getCustomerFutureRideDetailsSuccess = 'getCustomerFutureRideDetailsSuccess'
 export const getCustomerFutureRideDetailsFailure = 'getCustomerFutureRideDetailsFailure'
+export const getCustomerFutureRideDetailsReset = 'getCustomerFutureRideDetailsReset'

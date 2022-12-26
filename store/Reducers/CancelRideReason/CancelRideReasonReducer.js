@@ -1,4 +1,4 @@
-import { cancelRideReason, cancelRideReasonFailure, cancelRideReasonSuccess } from "../../Actions/CancelReason/actionTypes"
+import { cancelRideReason, cancelRideReasonFailure, cancelRideReasonReset, cancelRideReasonSuccess } from "../../Actions/CancelReason/actionTypes"
 
 const cancelReasonState = {
     runLoader: false,
@@ -27,6 +27,10 @@ const CancelRideReasonReducer = (state = cancelReasonState, action) => {
                 data: action.payload.data,
                 error: action.payload.error
             }
+        case cancelRideReasonReset:
+                return {
+                    ...cancelReasonState,
+                }
         default:
             return state;
     }

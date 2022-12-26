@@ -1,4 +1,4 @@
-import { TransactionDetails, TransactionDetailsFailure, TransactionDetailsSuccess } from "../../Actions/TransactionDetails/actionTypes"
+import { TransactionDetails, TransactionDetailsFailure, TransactionDetailsReset, TransactionDetailsSuccess } from "../../Actions/TransactionDetails/actionTypes"
 
 const transactionDetailsState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const TransactionDetailsReducer = (state = transactionDetailsState, action) => {
                 runLoader: action.payload.transactionDetailsData,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case TransactionDetailsReset:
+            return {
+                ...transactionDetailsState,
             }
         default:
             return state

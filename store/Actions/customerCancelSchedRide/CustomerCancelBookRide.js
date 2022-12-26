@@ -4,7 +4,6 @@ import { customerCancelBookRide, customerCancelBookRideFailure, customerCancelBo
 export const onResetCustomerCancelingBookedRide = () => {
     return (dispatch) => {
         dispatch(fetching(false))
-        dispatch(onFetchingResponse())
     }
 }
 
@@ -24,12 +23,6 @@ const fetching = (status) => {
     return {
         type: customerCancelBookRide,
         payload: { cancelingBookRide: status }
-    }
-}
-
-export const resetReducer = () => {
-    return {
-        type: customerCancelBookRideReset
     }
 }
 

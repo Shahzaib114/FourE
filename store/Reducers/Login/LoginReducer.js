@@ -1,4 +1,4 @@
-import { authentication, authenticationSuccess, authenticationFailure } from "../../Actions/Login/actionTypes";
+import { authentication, authenticationSuccess, authenticationFailure, authenticationReset } from "../../Actions/Login/actionTypes";
 const authenticationState = {
     runLoader: false,
     data: null,
@@ -26,6 +26,12 @@ const loginReducer = (state = authenticationState, action) => {
                 data: action.payload.authData,
                 error: action.payload.authError
             }
+            case authenticationReset:
+                return {
+                    ...authenticationState,
+                   
+                }
+            
         default:
             return state
     }

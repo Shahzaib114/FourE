@@ -1,4 +1,4 @@
-import { getRider, getRiderFailure, getRiderSuccess } from "../../Actions/gettingRider/actionTypes"
+import { getRider, getRiderFailure, getRiderReset, getRiderSuccess } from "../../Actions/gettingRider/actionTypes"
 
 const GettingDetailsState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const GettingRiderDetailsReducer = (state = GettingDetailsState, action) => {
                 runLoader: action.payload.gettingRider,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case getRiderReset:
+            return {
+                ...GettingDetailsState,
             }
         default:
             return state

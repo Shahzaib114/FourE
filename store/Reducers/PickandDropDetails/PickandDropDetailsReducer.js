@@ -1,4 +1,4 @@
-import { getPickandDropDetails, getPickandDropDetailsFailure, getPickandDropDetailsSuccess } from "../../Actions/getPickandDropLocations/actionTypes"
+import { getPickandDropDetails, getPickandDropDetailsFailure, getPickandDropDetailsReset, getPickandDropDetailsSuccess } from "../../Actions/getPickandDropLocations/actionTypes"
 
 const PickandDropDetailsState = {
     runLoader: true,
@@ -26,6 +26,10 @@ const PickandDropDetailsReducer = (state = PickandDropDetailsState, action) => {
                 runLoader: action.payload.locationDetails,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case getPickandDropDetailsReset:
+            return {
+                ...PickandDropDetailsState,
             }
         default:
             return state

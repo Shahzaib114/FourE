@@ -1,4 +1,4 @@
-import { postingDriverLocation, postingDriverLocationFailure, postingDriverLocationSuccess } from "../../Actions/DriverUpdatedData/actionTypes"
+import { postingDriverLocation, postingDriverLocationFailure, postingDriverLocationReset, postingDriverLocationSuccess } from "../../Actions/DriverLiveLocation/actionTypes"
 
 const driverLiveLocationState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const DriverLiveLocationReducer = (state = driverLiveLocationState, action ) => 
                 runLoader: action.payload.updatingDriverLocation,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case postingDriverLocationReset:
+            return {
+                ...driverLiveLocationState,
             }
         default:
             return state

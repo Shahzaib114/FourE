@@ -1,4 +1,4 @@
-import { customerUpdatingProfile, customerUpdatingProfileFailure, customerUpdatingProfileSuccess } from "../../Actions/CustomerUpdateProfile/actionTypes"
+import { customerUpdatingProfile, customerUpdatingProfileFailure, customerUpdatingProfileReset, customerUpdatingProfileSuccess } from "../../Actions/CustomerUpdateProfile/actionTypes"
 
 const updatingProfileState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const CustomerProfileUpdateReducer = (state = updatingProfileState, action) => {
                 runLoader: action.payload.updateProfile,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case customerUpdatingProfileReset:
+            return {
+                ...updatingProfileState,
             }
         default:
             return state;

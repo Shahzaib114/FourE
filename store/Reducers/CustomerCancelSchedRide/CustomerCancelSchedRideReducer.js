@@ -7,7 +7,6 @@ const CanelingBookedRideState = {
 }
 
 const CustomerCancelSchedRideReducer = (state = CanelingBookedRideState, action) => {
-    console.log('actions ', action)
     switch (action.type) {
         case customerCancelBookRide:
             return {

@@ -3,3 +3,4 @@
 export const postResetPassword = 'postResetPassword'
 export const ResetPasswordSuccess = 'ResetPasswordSuccess'
 export const ResetPasswordFailure = 'authenticationFailure'
+export const postResetPasswordReset = 'postResetPasswordReset'

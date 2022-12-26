@@ -1,4 +1,4 @@
-import { postCustomerSignupOTP, postCustomerSignupOTPFailure, postCustomerSignupOTPSuccess } from "../../Actions/ValidateCustomerSignupOTP/actionTypes"
+import { postCustomerSignupOTP, postCustomerSignupOTPFailure, postCustomerSignupOTPReset, postCustomerSignupOTPSuccess } from "../../Actions/ValidateCustomerSignupOTP/actionTypes"
 
 const ConfirmCustomerPassState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const CustomerSignupOTPReducer = (state = ConfirmCustomerPassState, action) => {
                 runLoader: action.payload.confirmCustomerSignupOTP,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case postCustomerSignupOTPReset:
+            return {
+                ...ConfirmCustomerPassState,
             }
         default:
             return state;

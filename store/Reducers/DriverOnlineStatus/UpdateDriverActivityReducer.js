@@ -1,4 +1,4 @@
-import { DriverStatusUpdate, DriverStatusUpdateFailure, DriverStatusUpdateSuccess } from "../../Actions/DriverStatus/actionTypes"
+import { DriverStatusUpdate, DriverStatusUpdateFailure, DriverStatusUpdateReset, DriverStatusUpdateSuccess } from "../../Actions/DriverStatus/actionTypes"
 
 const UpdatingDriverOnlineActivityState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const UpdateDriverActivityReducer = (state = UpdatingDriverOnlineActivityState, 
                 runLoader: action.payload.updateDriverOnlineStatus,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case DriverStatusUpdateReset:
+            return {
+                ...UpdatingDriverOnlineActivityState,
             }
         default:
             return state

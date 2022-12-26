@@ -165,20 +165,22 @@ const styles = StyleSheet.create({
         backgroundColor: '#EEF3F9',
         margin: '2%',
         borderRadius: 10,
-        justifyContent: 'space-around'
+        justifyContent: 'space-between'
     },
     sendParcelText: {
         padding: '2%',
-        width: '70%',
+        width: '60%',
         margin: '4%',
         color: Colors.getLightColor('primaryColor'),
         fontFamily: 'Montserrat-Medium',
+        fontSize:18,
     },
     gidtImage: {
         alignSelf: 'center',
         borderRadius: 10,
-        height: Dimensions.get('window').height * 0.05,
-        width: Dimensions.get('window').width * 0.1
+        height: Dimensions.get('window').height * 0.06,
+        width: Dimensions.get('window').width * 0.15,
+        marginRight:10,
     },
     verticleLine: {
         height: '90%',

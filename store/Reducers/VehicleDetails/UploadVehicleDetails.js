@@ -1,4 +1,4 @@
-import { setvehicleInformation, setvehicleInformationSuccess, setvehicleInformationFailure } from "../../Actions/vehicleInfo/actionTypes"
+import { setvehicleInformation, setvehicleInformationSuccess, setvehicleInformationFailure, setvehicleInformationReset } from "../../Actions/vehicleInfo/actionTypes"
 
 const VehicleInfoState = {
     runLoader: false,
@@ -6,8 +6,8 @@ const VehicleInfoState = {
     error: null,
 }
 
-const VehicleDetailsReducer = (state = VehicleInfoState, action ) => {
-    switch(action.type) {
+const VehicleDetailsReducer = (state = VehicleInfoState, action) => {
+    switch (action.type) {
         case setvehicleInformation:
             return {
                 ...state,
@@ -26,6 +26,10 @@ const VehicleDetailsReducer = (state = VehicleInfoState, action ) => {
                 runLoader: action.payload.vechiledetails,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case setvehicleInformationReset:
+            return {
+                ...VehicleInfoState,
             }
         default:
             return state

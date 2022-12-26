@@ -187,7 +187,6 @@ const TravelHistory = ({ route }) => {
         })
         return unsubscribe;
     }, [navigation]);
-    // navigation.events() registerAppLaunchedListener()
     messaging().setBackgroundMessageHandler(async remoteMessage => {
         console.log('called')
         // const navigation = useNavigation()

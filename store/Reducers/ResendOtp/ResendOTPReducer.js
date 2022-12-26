@@ -1,4 +1,4 @@
-import { postResendRequest, postResendRequestFailure, postResendRequestSuccess } from "../../Actions/ResendOtp/actionTypes"
+import { postResendRequest, postResendRequestFailure, postResendRequestReset, postResendRequestSuccess } from "../../Actions/ResendOtp/actionTypes"
 
 const ResendOTPState = {
     runLoader: false,
@@ -26,6 +26,10 @@ const ResendOTPReducer = (state = ResendOTPState, action) => {
                 runLoader: action.payload.resendOtp,
                 data: action.payload.data,
                 error: action.payload.error
+            }
+        case postResendRequestReset:
+            return {
+                ...ResendOTPState,
             }
         default:
             return state

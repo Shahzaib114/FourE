@@ -3,3 +3,4 @@
 export const customerUpdatingProfile = 'customerUpdatingProfile'
 export const customerUpdatingProfileSuccess = 'customerUpdatingProfileSuccess'
 export const customerUpdatingProfileFailure = 'customerUpdatingProfileFailure'
+export const customerUpdatingProfileReset = 'customerUpdatingProfileReset'

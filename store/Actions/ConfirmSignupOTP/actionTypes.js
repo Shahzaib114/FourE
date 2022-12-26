@@ -3,3 +3,4 @@
 export const postSignupOTP = 'postSignupOTP'
 export const postSignupOTPSuccess = 'postSignupOTPSuccess'
 export const postSignupOTPFailure = 'postSignupOTPFailure'
+export const postSignupOTPReset = 'postSignupOTPReset'

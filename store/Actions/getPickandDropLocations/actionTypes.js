@@ -3,3 +3,4 @@
 export const getPickandDropDetails = 'getPickandDropDetails'
 export const getPickandDropDetailsSuccess = 'getPickandDropDetailsSuccess'
 export const getPickandDropDetailsFailure = 'getPickandDropDetailsFailure'
+export const getPickandDropDetailsReset = 'getPickandDropDetailsReset'

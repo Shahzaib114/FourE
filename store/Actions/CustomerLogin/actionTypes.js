@@ -3,3 +3,4 @@
 export const customerAuthentication = 'customerAuthentication'
 export const customerAuthenticationSuccess = 'customerAuthenticationSuccess'
 export const customerAuthenticationFailure = 'customerAuthenticationFailure'
+export const customerAuthenticationReset = 'customerAuthenticationReset'

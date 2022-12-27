@@ -16,6 +16,7 @@ import moment from "moment";
 import Octicons from 'react-native-vector-icons/Octicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import { GettingCustomerFutureRideDetails } from '../../../store/Actions/CustomerFutureRideDetails/CustomerFutureRides';
+import BackgroundJob from 'react-native-background-actions';
 
 const CustomerUpComingTrips = ({ navigation }) => {
     const [showDate, setShowDate] = useState(false);
@@ -61,6 +62,19 @@ const CustomerUpComingTrips = ({ navigation }) => {
     const data = useSelector((state) => state.customerScheduleRide.data)
     const error = useSelector((state) => state.customerScheduleRide.error)
     const dispatch = useDispatch();
+    const removingBackgroundAction = async () => {
+        ClientLayer.getInstance().getDataManager().GetValueForKey('rideOnTheWay', result => {
+            let isStarted = JSON.parse(result)
+            console.log(isStarted)
+            if (isStarted === null || isStarted === undefined) {
+                console.log('Stopping')
+                BackgroundJob.stop()
+                // async () => {
+                //     await 
+                // }
+            }
+        })
+    }
 
     useEffect(() => {
         setDisplayView(loading)
@@ -68,7 +82,10 @@ const CustomerUpComingTrips = ({ navigation }) => {
         if (!loading && data != null) {
             if (data.data === 'error') {
                 setIsSchedule(true)
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('schedRides', JSON.stringify(false))
+                removingBackgroundAction()
             } else {
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('schedRides', JSON.stringify(true))
                 setIsSchedule(false)
                 setTravelHistoryArray(data.data)
             }
@@ -95,6 +112,7 @@ const CustomerUpComingTrips = ({ navigation }) => {
     useEffect(() => {
         const unsubscribe = navigation.addListener('blur', () => {
             setGotoDetails(false)
+            dispatch({type:'getCustomerFutureRidesReset'})
             // Do something when the screen blurs
         });
         return unsubscribe;
@@ -249,6 +267,7 @@ const CustomerUpComingTrips = ({ navigation }) => {
                         <View style={styles.flatlistParentView}>
                             {isSchedule ?
                                 (
+                                    
                                     <View style={{
                                         height: Dimensions.get('window').height * 0.70,
                                         justifyContent: 'center', alignItems: 'center', alignSelf: 'center'

@@ -23,6 +23,8 @@ import ClientLayer from '../../../components/Layers/ClientLayer';
 import PushNotification from 'react-native-push-notification';
 import messaging from '@react-native-firebase/messaging';
 import NetInfo from "@react-native-community/netinfo";
+import { useDispatch, useSelector } from 'react-redux';
+import { GettingCustomerScheduling } from '../../../store/Actions/CustomerFutureRides/CustomerFutureRides';
 
 const CustomerHomePage = (route) => {
     const navigation = useNavigation()
@@ -37,10 +39,28 @@ const CustomerHomePage = (route) => {
         latitudeDelta: 0.001,
         longitudeDelta: 0.001,
     });
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+            schedDispatch({ type: 'getCustomerFutureRidesReset' })
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            // onResetCurrentRide()
+            ClientLayer.getInstance().getDataManager().GetValueForKey('customer_id', result => {
+                let UserId = JSON.parse(result)
+                NetInfo.fetch().then(state => {
+                    if (state.isInternetReachable === false) {
+                        setNetModalVisible(true)
+                    } else {
+                        schedDispatch(GettingCustomerScheduling({
+                            customer_id: UserId
+                        }))
+                    }
+                })
+
+            })
             onResetCustomerProfile()
         });
         return unsubscribe;
@@ -94,6 +114,19 @@ const CustomerHomePage = (route) => {
                 )
             }
         })
+        ClientLayer.getInstance().getDataManager().GetValueForKey('customer_id', result => {
+            let UserId = JSON.parse(result)
+            NetInfo.fetch().then(state => {
+                if (state.isInternetReachable === false) {
+                    setNetModalVisible(true)
+                } else {
+                    schedDispatch(GettingCustomerScheduling({
+                        customer_id: UserId
+                    }))
+                }
+            })
+
+        })
         messaging().onNotificationOpenedApp(txt => {
             if (txt.data.type == 'rideCompleted') {
                 ClientLayer.getInstance().getDataManager().SaveValueForKey('completed', JSON.stringify(true))
@@ -112,6 +145,7 @@ const CustomerHomePage = (route) => {
 
             }
         })
+
         messaging().getInitialNotification().then(remoteMessage => {
             if (remoteMessage) {
                 if (remoteMessage.data.type == 'rideCompleted') {
@@ -131,7 +165,6 @@ const CustomerHomePage = (route) => {
                 }
             }
         })
-
 
         RNPusherPushNotifications.on('notification', (txt) => {
             console.log('notifiaction', NotificationData(txt))
@@ -229,6 +262,26 @@ const CustomerHomePage = (route) => {
         })
         return unsubscribe;
     }, [navigation]);
+
+    const schedLoading = useSelector((state) => state.customerScheduleRide.runLoader)
+    const schedData = useSelector((state) => state.customerScheduleRide.data)
+    const schedError = useSelector((state) => state.customerScheduleRide.error)
+    const schedDispatch = useDispatch();
+    useEffect(() => {
+        if (!schedLoading && schedData != null) {
+            if (schedData.data === 'error') {
+                console.log('sched false')
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('schedRides', JSON.stringify(false))
+            } else {
+                console.log('sched true')
+                ClientLayer.getInstance().getDataManager().SaveValueForKey('schedRides', JSON.stringify(true))
+            }
+        }
+        else if (!schedLoading && schedError != null) {
+            alert('Credentials are Wrong')
+        }
+    }, [schedLoading])
+
 
 
     return (
@@ -368,8 +421,8 @@ const CustomerHomePage = (route) => {
                 </View>
 
                 <View style={styles.thirdView}>
-                    <TouchableOpacity onPress={()=> navigation.navigate('CustomerRentACar')}
-                    style={styles.sendParcelOpacity}>
+                    <TouchableOpacity onPress={() => navigation.navigate('CustomerRentACar')}
+                        style={styles.sendParcelOpacity}>
                         <Text style={styles.sendParcelText}>
                             Rent a Car
                         </Text>
@@ -377,8 +430,8 @@ const CustomerHomePage = (route) => {
                         <Image source={require('../../../assets/Images/sedan.png')} style={styles.gidtImage}>
                         </Image>
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                    style={styles.sendParcelOpacity}>
+                    <TouchableOpacity
+                        style={styles.sendParcelOpacity}>
                         <Text style={styles.sendParcelText}>
                             Order Food
                         </Text>

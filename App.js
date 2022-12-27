@@ -389,7 +389,6 @@ function App({ navigation }) {
           <Stack.Screen name="IncomingRides" component={IncomingRides} />
           <Stack.Screen name="NetworkCheck" component={NetworkCheck} />
 
-
           {/* Starting Customer App*/}
           <Stack.Screen name="UserAppSplash" component={UserAppSplash} />
           <Stack.Screen name="CustomerLogin" component={CustomerLogin} />
@@ -410,8 +409,6 @@ function App({ navigation }) {
           <Stack.Screen name="CustomerTransactionDetails" component={CustomerTransactionDetails} />
           <Stack.Screen name="CustomerCancelRide" component={CustomerCancelRide} />
           <Stack.Screen name="CustomerRentACar" component={CustomerRentACar} />
-
-
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

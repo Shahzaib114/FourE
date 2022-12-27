@@ -139,15 +139,15 @@ const PickDropDetails = ({ route }) => {
         });
     }
     const locationCalling = async () => {
-            try {
-                await BackgroundJob.start(taskRandom, options)
-                console.log('Started Background Action')
-            } catch (e) {
-                console.log('error is', e)
-            }        
+        try {
+            await BackgroundJob.start(taskRandom, options)
+            console.log('Started Background Action')
+        } catch (e) {
+            console.log('error is', e)
+        }
     }
     const options = {
-        taskName: 'Example',
+        taskName: 'FourE Booking',
         taskTitle: 'Location On',
         taskDesc: 'ExampleTask description',
         taskIcon: {
@@ -165,18 +165,27 @@ const PickDropDetails = ({ route }) => {
         console.log('clicked')
     }
     Linking.addEventListener('url', handleOpenUrl)
+    const removingBackgroundAction = async () => {
+        ClientLayer.getInstance().getDataManager().GetValueForKey('schedRides', result => {
+            let schedRide = JSON.parse(result)
+            if (schedRide === false) {
+                console.log('no any sched ride, starting bg system')
+                locationCalling()
+            } else {
+                console.log('sched ride detected, starting bg system')
+            }
+        })
+
+    }
     useEffect(() => {
         setConfirmationLoader(confirmationLoading)
         console.log(confirmationData)
         if (!confirmationLoading && confirmationData != null) {
             if (confirmationData.message === 'Feature job created') {
-                // if (scheduleRideDone === true) {
-                    confirmationBookingDispatch({type:'confirmBookingReset'})
-                    alert('Scheduled Ride has been created, you can check it in Upcoming Trips!')
-                    navigation.navigate('CustomerHomePage')
-                // } else {
-                //     console.log('its false')
-                // }
+                confirmationBookingDispatch({ type: 'confirmBookingReset' })
+                alert('Scheduled Ride has been created, you can check it in Future Trips!')
+                navigation.navigate('CustomerHomePage')
+                removingBackgroundAction()
             } else {
                 if (confirmationData.success) {
                     if (confirmationData.message == "Driver not available") {
@@ -189,14 +198,14 @@ const PickDropDetails = ({ route }) => {
                         ClientLayer.getInstance().getDataManager().SaveValueForKey('toLabel', JSON.stringify(destinationLabel))
                         ClientLayer.getInstance().getDataManager().SaveValueForKey('currentRidePrice', JSON.stringify(rideFare))
                         ClientLayer.getInstance().getDataManager().SaveValueForKey('driver_id_RideDetails', confirmationData.data.find_driver.driver_id)
-                        locationCalling()
+                        removingBackgroundAction()
                         navigation.replace('CurrentRideDetails',
                             {
                                 paramData: confirmationData.data,
                                 paramFrom: currentLocationLabel,
                                 paramTo: destinationLabel
                             })
-                        
+
                     }
                 }
             }

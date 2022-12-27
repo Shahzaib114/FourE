@@ -77,7 +77,14 @@ const AccountCreated = ({ route }) => {
         }
     }, [loading])
     const removingBackgroundAction = async () => {
-        await BackgroundJob.stop()
+        ClientLayer.getInstance().getDataManager().GetValueForKey('schedRides', started => {
+            let schedRide = JSON.parse(started)
+            if(schedRide === false ){
+                async () => {
+                    await BackgroundJob.stop()
+                }
+            }
+        })
     }
     const [customStarRating, setCustomStarRating] = useState(4);
     const [isModalVisible, setModalVisible] = useState(false);

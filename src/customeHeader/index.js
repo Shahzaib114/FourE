@@ -231,10 +231,9 @@ const CustomeHeader = (props) => {
             const { delay } = taskData;
             for (let i = 0; BackgroundJob.isRunning(); i++) {
                 shareDriverLocation()
-                console.log('getting locations', 'Runned -> ' + i)
                 await BackgroundJob.updateNotification(
                     {
-                        taskDesc: 'Your Location will be shared to your concerned Rider!',
+                        taskDesc: 'Your Location will be shared to your concerned Customer!',
                         progressBar: 2,
                     });
                 await sleep(delay);

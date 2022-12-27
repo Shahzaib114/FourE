@@ -431,7 +431,14 @@ const CurrentRideDetails = ({ route, delay }) => {
     const cancelReasonError = useSelector((state) => state.cancelRideReason.error)
     const cancelReasonDispatch = useDispatch();
     const removingBackgroundAction = async () => {
-        await BackgroundJob.stop()
+        ClientLayer.getInstance().getDataManager().GetValueForKey('schedRides', started => {
+            let schedRide = JSON.parse(started)
+            if(schedRide === false ){
+                // async () => {
+                    BackgroundJob.stop()
+                // }
+            }
+        })
     }
     useEffect(() => {
         if (!cancelReasonLoading && cancelReasonData != null) {

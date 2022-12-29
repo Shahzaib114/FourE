@@ -1,4 +1,4 @@
-import { View, FlatList, Dimensions, Text, ScrollView, Image, TextInput, TouchableOpacity, ActivityIndicator, PermissionsAndroid, Alert } from 'react-native'
+import { View, FlatList, Dimensions, Text, ScrollView, Image, TextInput,Platform, TouchableOpacity, ActivityIndicator, PermissionsAndroid, Alert } from 'react-native'
 import React, { useState, useEffect, } from 'react';
 import styles from './style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -70,18 +70,35 @@ const VehicleInfo = ({ navigation, route }) => {
     }, [loading])
 
     const getPermissions = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-            );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                setGalleryPermissions(true)
-            } else {
-                setGalleryPermissions(false)
+        const OsVer = Platform.constants['Release'];
+        if(OsVer>='13'){
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    setGalleryPermissions(true)
+                } else {
+                    setGalleryPermissions(false)
+                }
+            } catch (err) {
+                console.warn(err);
             }
-        } catch (err) {
-            console.warn(err);
+        }else{
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    setGalleryPermissions(true)
+                } else {
+                    setGalleryPermissions(false)
+                }
+            } catch (err) {
+                console.warn(err);
+            }
         }
+       
     }
 
     const renderItem = ({ item }) => {
